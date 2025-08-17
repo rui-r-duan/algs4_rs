@@ -87,7 +87,7 @@ impl In {
                 Ok(n) => {
                     list.push(n);
                 }
-                Err(e) => {
+                Err(_e) => {
                     return Err(io::Error::from(io::ErrorKind::InvalidData));
                 }
             }

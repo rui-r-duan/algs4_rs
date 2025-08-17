@@ -1,4 +1,4 @@
-use algs4::scanner::Scanner;
+use algs4::Scanner;
 
 fn main() -> std::io::Result<()> {
     let mut scanner = Scanner::new(std::io::stdin().lock());

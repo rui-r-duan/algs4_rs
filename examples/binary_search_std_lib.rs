@@ -2,7 +2,6 @@
 //! a command-line argument; reads in integers from standard input;
 //! prints to standard output those integers that do **not** appear in the file.
 
-use algs4::index_of_i32_seq;
 use algs4::{In, StdIn};
 use std::env;
 use std::time::Instant;
@@ -20,7 +19,7 @@ fn main() -> std::io::Result<()> {
     let now = Instant::now();
     while !stdin.is_empty() {
 	let key = stdin.read_i32()?;
-	if index_of_i32_seq(&allowlist, &key) == -1 {
+	if allowlist.binary_search(&key).is_err() {
 	    println!("{}", key);
 	}
     }
