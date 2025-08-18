@@ -11,6 +11,7 @@
 //! - `has_next`
 //! - `next`
 //! - `next_i32`
+//! - `next_i64`
 //! - `next_f64`
 //! - `next_bool`
 //!
@@ -57,6 +58,8 @@ impl<B: BufRead> Scanner<B> {
     ///
     /// If such a token is found, return `Ok(true)`, otherwise, return `Ok(false)`.
     ///
+    /// # Errors
+    ///
     /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
     /// `Interrupted`, because it is handled (ignored) in this method.
     pub fn has_next(&mut self) -> io::Result<bool> {
@@ -75,6 +78,8 @@ impl<B: BufRead> Scanner<B> {
     /// A line is a sequence of UTF-8 characters.
     ///
     /// If such a line is found, return `Ok(true)`, otherwise, return `Ok(false)`.
+    ///
+    /// # Errors
     ///
     /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
     /// `Interrupted`, because it is handled (ignored) in this method.
@@ -269,6 +274,8 @@ impl<B: BufRead> Scanner<B> {
     ///
     /// A token is a sequence of non-ascii-whitespace UTF-8 characters.
     ///
+    /// # Errors
+    ///
     /// If no such token is found, return IO Error `NotFound`.
     ///
     /// If the next token has any invalid UTF-8 character, return IO Error `InvalidData`.
@@ -296,6 +303,8 @@ impl<B: BufRead> Scanner<B> {
     }
 
     /// Reads the next token as an `i32`.
+    ///
+    /// # Errors
     ///
     /// If no such i32 is found, return IO Error `NotFound`.
     ///
@@ -328,7 +337,44 @@ impl<B: BufRead> Scanner<B> {
         }
     }
 
+    /// Reads the next token as an `i64`.
+    ///
+    /// # Errors
+    ///
+    /// If no such i64 is found, return IO Error `NotFound`.
+    ///
+    /// If the next token is not a valid i64, return IO Error `InvalidData`.
+    ///
+    /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
+    /// `Interrupted`, because it is handled (ignored) in this method.
+    ///
+    /// If any Error (including `NotFound`) is returned, then the input stream's cursor is not
+    /// changed, which means that if the client calls another `next_*` method immediately, the next
+    /// entity (if fetched successfully) contains the characters of this invalid token.  For
+    /// example, the next token is not a valid i64, but the token is a valid UTF-8 string, then it
+    /// may be a valid bool for the next call to `next_bool`, or the next call to `next_line` will
+    /// include this token in the line.
+    pub fn next_i64(&mut self) -> io::Result<i64> {
+        if !self.token_peeked {
+            self.peek_next()?;
+        }
+        if self.next_token.is_none() {
+            Err(std::io::Error::from(std::io::ErrorKind::NotFound))
+        } else {
+            let s = self.next_token.as_ref().unwrap();
+            match s.parse::<i64>() {
+                Ok(v) => {
+                    self.mark_token_consumed();
+                    Ok(v)
+                }
+                Err(_e) => Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
+            }
+        }
+    }
+
     /// Reads the next token as an `f64`.
+    ///
+    /// # Errors
     ///
     /// If no such f64 is found, return IO Error `NotFound`.
     ///
@@ -362,6 +408,8 @@ impl<B: BufRead> Scanner<B> {
     }
 
     /// Reads the next token as a `bool`.
+    ///
+    /// # Errors
     ///
     /// If no such bool is found, return IO Error `NotFound`.
     ///
@@ -412,6 +460,8 @@ impl<B: BufRead> Scanner<B> {
 
     /// Reads until the next Line Feed or the end of the input stream, returns the line string
     /// disgarging the line separator ('\n' on Unix-like OS, "\r\n" on Windows) if any.
+    ///
+    /// # Errors
     ///
     /// If no next line is found (no more input data), return IO Error `NotFound`.
     ///

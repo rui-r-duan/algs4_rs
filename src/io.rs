@@ -8,12 +8,14 @@ pub struct StdIn {
 }
 
 impl StdIn {
+    /// Creates a new instance of StdIn.
     pub fn new() -> Self {
         StdIn {
             scanner: Scanner::new(io::stdin().lock()),
         }
     }
 
+    /// Returns true of the standard input has more data, returns false otherwise.
     pub fn is_empty(&mut self) -> bool {
         match self.scanner.has_next() {
             Ok(b) => !b,
@@ -21,11 +23,17 @@ impl StdIn {
         }
     }
 
+    /// Reads an i32 from stdin.
     pub fn read_i32(&mut self) -> io::Result<i32> {
         self.scanner.next_i32()
     }
 
-    /// Read all 32-bit integers (i32) from stdin, consuming all the
+    /// Reads an i64 from stdin.
+    pub fn read_i64(&mut self) -> io::Result<i64> {
+        self.scanner.next_i64()
+    }
+
+    /// Reads all 32-bit integers (i32) from stdin, consuming all the
     /// content in stdin.
     pub fn read_all_i32() -> io::Result<Vec<i32>> {
         let mut stdin = io::stdin();
@@ -46,7 +54,7 @@ impl StdIn {
         Ok(list)
     }
 
-    /// Read all 32-bit integers (i32) from stdin using `Scanner`,
+    /// Reads all 32-bit integers (i32) from stdin using `Scanner`,
     /// consuming all the content in stdin, reading the content in a
     /// token-by-token streaming mode.
     pub fn read_all_i32_streaming(&mut self) -> io::Result<Vec<i32>> {
@@ -69,6 +77,7 @@ pub struct In {
 }
 
 impl In {
+    /// Creates a new instance of In.
     pub fn new(path: &str) -> Self {
         In {
             file_path: path.to_string(),
@@ -84,6 +93,26 @@ impl In {
         let mut list = Vec::new();
         for t in all.split_ascii_whitespace() {
             match t.parse::<i32>() {
+                Ok(n) => {
+                    list.push(n);
+                }
+                Err(_e) => {
+                    return Err(io::Error::from(io::ErrorKind::InvalidData));
+                }
+            }
+        }
+        Ok(list)
+    }
+
+    /// Read all 64-bit integers (i64) from stdin, consuming all the
+    /// content in stdin.
+    pub fn read_all_i64(&self) -> io::Result<Vec<i64>> {
+        let mut f = std::fs::File::open(self.file_path.as_str())?;
+        let mut all = String::new();
+        f.read_to_string(&mut all)?;
+        let mut list = Vec::new();
+        for t in all.split_ascii_whitespace() {
+            match t.parse::<i64>() {
                 Ok(n) => {
                     list.push(n);
                 }

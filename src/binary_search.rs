@@ -37,6 +37,24 @@ pub fn index_of_i32_seq(a: &[i32], key: &i32) -> i64 {
     -1
 }
 
+
+/// Returns the index of the specified key in the specified sequence,
+/// or -1 if not found.
+pub fn index_of_i64_seq(a: &[i64], key: &i64) -> i64 {
+    let (mut lo, mut hi) = (0, a.len() as i64 - 1);
+    while lo <= hi {
+        let mid = lo + (hi - lo) / 2;
+        if *key < a[mid as usize] {
+            hi = mid - 1;
+        } else if *key > a[mid as usize] {
+            lo = mid + 1;
+        } else {
+            return mid;
+        }
+    }
+    -1
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
