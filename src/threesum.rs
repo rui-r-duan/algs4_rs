@@ -1,3 +1,9 @@
+//! Take n integers and counts the number of triples that sum to exactly 0.
+//!
+//! ### Limitations
+//! - We ignore integer overflow
+
+/// O(n^3)
 pub fn print_all(a: &[i32]) {
     let n = a.len();
     for i in 0..n {
@@ -11,6 +17,7 @@ pub fn print_all(a: &[i32]) {
     }
 }
 
+/// O(n^3)
 pub fn count(a: &[i32]) -> i32 {
     let n = a.len();
     let mut count = 0;
