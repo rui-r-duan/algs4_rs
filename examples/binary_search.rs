@@ -2,8 +2,8 @@
 //! a command-line argument; reads in integers from standard input;
 //! prints to standard output those integers that do **not** appear in the file.
 
-use algs4::index_of_i32_seq;
-use algs4::{In, StdIn};
+use algs4_rs::index_of_i32_seq;
+use algs4_rs::{In, StdIn};
 use std::env;
 use std::time::Instant;
 

@@ -1,4 +1,4 @@
-use algs4::threesum;
+use algs4_rs::threesum;
 use std::time::{Duration, Instant};
 
 fn time_trial(n: usize) -> Duration {

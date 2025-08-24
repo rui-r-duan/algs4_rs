@@ -1,5 +1,5 @@
-use algs4::In;
-use algs4::threesum;
+use algs4_rs::In;
+use algs4_rs::threesum;
 use std::env;
 use std::time::Instant;
 

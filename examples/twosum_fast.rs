@@ -1,6 +1,6 @@
-use algs4::In;
-use algs4::error::Algs4Error;
-use algs4::twosum_fast;
+use algs4_rs::In;
+use algs4_rs::error::Algs4Error;
+use algs4_rs::twosum_fast;
 use std::env;
 use std::time::Instant;
 

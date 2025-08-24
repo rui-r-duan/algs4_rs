@@ -1,4 +1,4 @@
-use algs4::Scanner;
+use algs4_rs::Scanner;
 use std::io::Write;
 
 fn main() -> std::io::Result<()> {
