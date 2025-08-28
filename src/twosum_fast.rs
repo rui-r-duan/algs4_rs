@@ -15,10 +15,10 @@ pub fn print_all(a: &mut [i32]) -> Result<(), InvalidArgument> {
         ));
     }
     for i in 0..n {
-        if let Ok(j) = a.binary_search(&-a[i]) {
-            if j > i {
-                println!("{} {}", a[i], a[j]);
-            }
+        if let Ok(j) = a.binary_search(&-a[i])
+            && j > i
+        {
+            println!("{} {}", a[i], a[j]);
         }
     }
     Ok(())
@@ -35,10 +35,10 @@ pub fn count(a: &mut [i32]) -> Result<i32, InvalidArgument> {
     }
     let mut count = 0;
     for i in 0..n {
-        if let Ok(j) = a.binary_search(&-a[i]) {
-            if j > i {
-                count += 1;
-            }
+        if let Ok(j) = a.binary_search(&-a[i])
+            && j > i
+        {
+            count += 1;
         }
     }
     Ok(count)

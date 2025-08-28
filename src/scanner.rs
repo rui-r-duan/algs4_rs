@@ -9,7 +9,7 @@
 //! # Mode 1: token-by-token (delimiter: ASCII whitespaces)
 //! methods:
 //! - `has_next`
-//! - `next`
+//! - `next_token`
 //! - `next_i32`
 //! - `next_i64`
 //! - `next_f64`
@@ -99,10 +99,7 @@ impl<B: BufRead> Scanner<B> {
     //
     // If any IO Errors is encountered, return it as `Err`.
     fn read_new_data(&mut self) -> io::Result<usize> {
-        let available = match self.bufread.fill_buf() {
-            Ok(n) => n,
-            Err(e) => return Err(e),
-        };
+        let available = self.bufread.fill_buf()?;
         self.buf.extend_from_slice(available);
         let len = available.len();
         self.bufread.consume(len);
@@ -171,10 +168,7 @@ impl<B: BufRead> Scanner<B> {
 
         // Find the first non-whitespace.
         let i_result = self.peek_until(|x: u8| !x.is_ascii_whitespace(), self.token_peek_pos);
-        if i_result.is_err() {
-            return Err(i_result.unwrap_err());
-        }
-        let i_opt = i_result.unwrap();
+        let i_opt = i_result?;
         if i_opt.is_none() {
             return Err(io::Error::from(io::ErrorKind::NotFound));
         }
@@ -182,14 +176,11 @@ impl<B: BufRead> Scanner<B> {
 
         // Find the next whitespace
         let j_result = self.peek_until(|x: u8| x.is_ascii_whitespace(), i + 1);
-        if j_result.is_err() {
-            return Err(j_result.unwrap_err());
-        }
-        let j_opt = j_result.unwrap();
-        let j = if j_opt.is_none() {
-            self.buf.len()
+        let j_opt = j_result?;
+        let j = if let Some(jj) = j_opt {
+            jj
         } else {
-            j_opt.unwrap()
+            self.buf.len()
         };
 
         self.token_peek_pos = j;
@@ -222,14 +213,11 @@ impl<B: BufRead> Scanner<B> {
 
         // Find the next Line Feed
         let j_result = self.peek_until(|x: u8| x == b'\n', self.line_peek_pos);
-        if j_result.is_err() {
-            return Err(j_result.unwrap_err());
-        }
-        let j_opt = j_result.unwrap();
-        let new_line_peek_pos = if j_opt.is_none() {
-            self.buf.len()
+        let j_opt = j_result?;
+        let new_line_peek_pos = if let Some(j) = j_opt {
+            j + 1
         } else {
-            j_opt.unwrap() + 1
+            self.buf.len()
         };
 
         if self.line_peek_pos == new_line_peek_pos {
@@ -289,7 +277,7 @@ impl<B: BufRead> Scanner<B> {
     /// example, in the upcoming input stream all characters are whitespaces, so no valid next token
     /// is found, however, if you call `next_line`, these whitespaces will be included in the next
     /// line because they form a valid line.
-    pub fn next(&mut self) -> io::Result<String> {
+    pub fn next_token(&mut self) -> io::Result<String> {
         if !self.token_peeked {
             self.peek_next()?;
         }
@@ -437,7 +425,7 @@ impl<B: BufRead> Scanner<B> {
                 .unwrap()
                 .clone()
                 .to_ascii_lowercase();
-            let result = match token.as_str() {
+            match token.as_str() {
                 "true" | "1" => {
                     self.mark_token_consumed();
                     Ok(true)
@@ -453,8 +441,7 @@ impl<B: BufRead> Scanner<B> {
                         token
                     ),
                 )),
-            };
-            result
+            }
         }
     }
 
@@ -590,7 +577,7 @@ mod tests {
         let hasnext = scanner.has_next();
         assert!(hasnext.is_ok());
         assert!(hasnext.unwrap());
-        let r = scanner.next();
+        let r = scanner.next_token();
         assert!(r.is_ok());
         let s = r.unwrap();
         assert_eq!(s, "hello");
@@ -606,7 +593,7 @@ mod tests {
         let b = r.unwrap();
         assert!(b);
 
-        let r = bool_scanner.next();
+        let r = bool_scanner.next_token();
         // Consumes "false"
         assert!(r.is_ok());
         let s = r.unwrap();

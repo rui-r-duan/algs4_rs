@@ -6,7 +6,7 @@ fn main() -> std::io::Result<()> {
 
     print!("Type a string: ");
     std::io::stdout().flush()?;
-    let s = scanner.next()?;
+    let s = scanner.next_token()?;
     println!("Your string was: {}", s);
     println!();
 
@@ -34,7 +34,7 @@ fn main() -> std::io::Result<()> {
             // If we do not consume the invalid-bool token, then
             // the following `next_f64` would consume the token, which
             // yields an error.
-            let t = scanner.next()?;
+            let t = scanner.next_token()?;
             println!("Consuming (fetching) the next token ... it was {}", t);
             println!();
         }
@@ -67,7 +67,7 @@ fn main() -> std::io::Result<()> {
         if !hasnext {
             break;
         }
-        let t = scanner.next()?;
+        let t = scanner.next_token()?;
         println!("Got token: {}", t);
     }
 

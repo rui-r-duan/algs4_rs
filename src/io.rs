@@ -72,6 +72,12 @@ impl StdIn {
     }
 }
 
+impl Default for StdIn {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct In {
     file_path: String,
 }
