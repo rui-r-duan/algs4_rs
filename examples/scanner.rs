@@ -30,13 +30,13 @@ fn main() -> std::io::Result<()> {
             println!();
         }
         Err(e) => {
-            println!("{e}");	// You can also try `println!("{e:?}");`.
-	    // If we do not consume the invalid-bool token, then
-	    // the following `next_f64` would consume the token, which
-	    // yields an error.
+            println!("{e}"); // You can also try `println!("{e:?}");`.
+            // If we do not consume the invalid-bool token, then
+            // the following `next_f64` would consume the token, which
+            // yields an error.
             let t = scanner.next()?;
             println!("Consuming (fetching) the next token ... it was {}", t);
-	    println!();
+            println!();
         }
     }
 

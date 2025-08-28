@@ -2,7 +2,7 @@
 //!
 //! Compute least squares solution to <em>y</em> = &beta; * <em>x</em> + &alpha;
 
-use crate::error::Algs4Error;
+use crate::error::InvalidArgument;
 use std::fmt;
 
 ///  The methods of `LinearRegression` struct performs a simple linear regression on an set of
@@ -30,12 +30,10 @@ impl LinearRegression {
     ///
     /// # Errors
     ///
-    /// Returns `Algs4Error::InvalidArgument` if the lengths of the two slices are not equal.
-    pub fn new(x: &[f64], y: &[f64]) -> Result<Self, Algs4Error> {
+    /// Returns `InvalidArgument` if the lengths of the two slices are not equal.
+    pub fn new(x: &[f64], y: &[f64]) -> Result<Self, InvalidArgument> {
         if x.len() != y.len() {
-            return Err(Algs4Error::InvalidArgument(
-                "array length are not equal".to_string(),
-            ));
+            return Err(InvalidArgument("array length are not equal".to_string()));
         }
         let n = x.len();
 

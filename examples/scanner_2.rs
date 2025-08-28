@@ -5,13 +5,13 @@ fn main() -> std::io::Result<()> {
 
     let mut i = 0;
     loop {
-	let hasnext = scanner.has_next_line()?;
-	if !hasnext {
-	    break;
-	}
-	let line = scanner.next_line()?;
-	println!("{}", line);
-	i += 1;
+        let hasnext = scanner.has_next_line()?;
+        if !hasnext {
+            break;
+        }
+        let line = scanner.next_line()?;
+        println!("{}", line);
+        i += 1;
     }
     println!("got {} lines", i);
 

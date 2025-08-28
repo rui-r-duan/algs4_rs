@@ -3,18 +3,20 @@
 //! ### Limitations
 //! - We ignore integer overflow
 
-use crate::error::Algs4Error;
+use crate::error::InvalidArgument;
 
 /// O(n log n)
-pub fn print_all(a: &mut [i32]) -> Result<(), Algs4Error> {
+pub fn print_all(a: &mut [i32]) -> Result<(), InvalidArgument> {
     let n = a.len();
     a.sort_unstable();
     if contains_duplicates(a) {
-	return Err(Algs4Error::InvalidArgument("slice contains duplicate integers".to_string()));
+        return Err(InvalidArgument(
+            "slice contains duplicate integers".to_string(),
+        ));
     }
     for i in 0..n {
-	if let Ok(j) = a.binary_search(&-a[i]) {
-	    if j > i {
+        if let Ok(j) = a.binary_search(&-a[i]) {
+            if j > i {
                 println!("{} {}", a[i], a[j]);
             }
         }
@@ -23,19 +25,21 @@ pub fn print_all(a: &mut [i32]) -> Result<(), Algs4Error> {
 }
 
 /// O(n log n)
-pub fn count(a: &mut [i32]) -> Result<i32, Algs4Error> {
+pub fn count(a: &mut [i32]) -> Result<i32, InvalidArgument> {
     let n = a.len();
     a.sort_unstable();
     if contains_duplicates(a) {
-	return Err(Algs4Error::InvalidArgument("slice contains duplicate integers".to_string()));
+        return Err(InvalidArgument(
+            "slice contains duplicate integers".to_string(),
+        ));
     }
     let mut count = 0;
     for i in 0..n {
-	if let Ok(j) = a.binary_search(&-a[i]) {
-	    if j > i {
-		count += 1;
-	    }
-	}
+        if let Ok(j) = a.binary_search(&-a[i]) {
+            if j > i {
+                count += 1;
+            }
+        }
     }
     Ok(count)
 }
@@ -43,9 +47,9 @@ pub fn count(a: &mut [i32]) -> Result<i32, Algs4Error> {
 // pre: `a` is sorted
 fn contains_duplicates(a: &[i32]) -> bool {
     for i in 1..a.len() {
-	if a[i] == a[i-1] {
-	    return true;
-	}
+        if a[i] == a[i - 1] {
+            return true;
+        }
     }
     false
 }

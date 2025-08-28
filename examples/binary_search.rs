@@ -19,10 +19,10 @@ fn main() -> std::io::Result<()> {
 
     let now = Instant::now();
     while !stdin.is_empty() {
-	let key = stdin.read_i32()?;
-	if index_of_i32_seq(&allowlist, &key) == -1 {
-	    println!("{}", key);
-	}
+        let key = stdin.read_i32()?;
+        if index_of_i32_seq(&allowlist, &key) == -1 {
+            println!("{}", key);
+        }
     }
     println!("elapsed time = {:.3}s", now.elapsed().as_secs_f64());
 

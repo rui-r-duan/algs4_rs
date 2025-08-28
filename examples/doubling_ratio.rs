@@ -17,9 +17,9 @@ fn main() {
     let mut n = 250;
     loop {
         let time: Duration = time_trial(n);
-	let ratio = time.as_secs_f64() / prev.as_secs_f64();
+        let ratio = time.as_secs_f64() / prev.as_secs_f64();
         println!("{:7} {:7.1} {:5.1}", n, time.as_secs_f64(), ratio);
-	prev = time;
+        prev = time;
         n += n;
     }
 }

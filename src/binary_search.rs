@@ -37,7 +37,6 @@ pub fn index_of_i32_seq(a: &[i32], key: &i32) -> i64 {
     -1
 }
 
-
 /// Returns the index of the specified key in the specified sequence,
 /// or -1 if not found.
 pub fn index_of_i64_seq(a: &[i64], key: &i64) -> i64 {
@@ -69,10 +68,10 @@ mod tests {
         let i = index_of(&a, &"4");
         assert_eq!(i, -1);
 
-	// empty list
-	let a = [];
-	let i = index_of(&a, &"5");
-	assert_eq!(i, -1);
+        // empty list
+        let a = [];
+        let i = index_of(&a, &"5");
+        assert_eq!(i, -1);
 
         // If there are duplicated elements in the sequence,
         // the result is undefined.
@@ -100,10 +99,10 @@ mod tests {
         let i = index_of_i32_seq(&b, &1);
         assert_eq!(i, 1);
 
-	// empty list
-	let a = [];
-	let i = index_of(&a, &"5");
-	assert_eq!(i, -1);
+        // empty list
+        let a = [];
+        let i = index_of(&a, &"5");
+        assert_eq!(i, -1);
 
         // If there are duplicated elements in the sequence,
         // the result is undefined.
