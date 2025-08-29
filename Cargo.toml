@@ -2,6 +2,13 @@
 name = "algs4_rs"
 version = "0.1.0"
 edition = "2024"
+authors = ["Rui Duan <ruiduan@member.fsf.org>"]
+description = "Rust implementations for the algorithms and clients in the text book \"Algorithms, 4th Edition\" by Robert Sedgewick and Kevin Wayne."
+homepage = "https://github.com/rui-r-duan/algs4_rs"
+repository = "https://github.com/rui-r-duan/algs4_rs"
+keywords = ["algorithm"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
 
 [dependencies]
 
