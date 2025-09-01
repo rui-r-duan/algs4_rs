@@ -1,3 +1,4 @@
+pub mod bag;
 pub mod binary_search;
 pub mod bst;
 pub mod error;
@@ -9,6 +10,7 @@ pub mod threesum_fast;
 pub mod twosum;
 pub mod twosum_fast;
 
+pub use bag::*;
 pub use binary_search::*;
 pub use bst::*;
 pub use io::*;

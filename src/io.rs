@@ -70,6 +70,11 @@ impl StdIn {
         }
         Ok(list)
     }
+
+    /// Read a string token from stdin.
+    pub fn read_string(&mut self) -> io::Result<String> {
+        self.scanner.next_token()
+    }
 }
 
 impl Default for StdIn {
