@@ -16,6 +16,7 @@ Java version.
 - In this repo, there is **NO** code for the exercises and assignments.
 - The library code only depends on Rust standard library, no other library is
   used.
+- Complete documentation.
 - Unit tests in the `tests` modules.
 - Clients in `examples` directory.
 - Big-O analysis tools: `DoublingTest`, `DoublingRatio`, Stop Watch (using Rust
@@ -30,6 +31,12 @@ cargo build
 cargo test
 cargo test -- --show-output   # show stdout
 cargo test bst   # only run the tests which contain name "bst"
+```
+
+Most internal modules are re-exported.  For example,
+
+```
+use algs4_rs::BST; // `algs4_rs::bst::BST` is used
 ```
 
 ## Copyright
