@@ -20,12 +20,14 @@
 // to
 ///////////////////////////////////////////////////////////////////////////////
 
-use algs4_rs::Bag;
 use algs4_rs::StdIn;
+use algs4_rs::VecBag as Bag;
+use std::time::Instant;
 
 fn main() -> std::io::Result<()> {
     let mut bag = Bag::new();
     let mut stdin = StdIn::new();
+    let now = Instant::now();
     while !stdin.is_empty() {
         let item = stdin.read_string()?;
         bag.add(item);
@@ -35,6 +37,7 @@ fn main() -> std::io::Result<()> {
     for s in bag.iter() {
         println!("{s}");
     }
+    println!("elapsed time = {:.3}s", now.elapsed().as_secs_f64());
 
     Ok(())
 }
