@@ -1,8 +1,8 @@
 /// The `LinkedBag` struct represents a bag (or multiset) of generic items.  It supports insertion
 /// and iterating over the items in arbitrary order.
 ///
-/// This implementation uses a singly linked list.  See `VecBag` for a version that is uses a
-/// resizing Vec.  `VecBag` is similar to algs4 Java version `ResizingArrayBag`.
+/// This implementation uses a singly linked list.  See `VecBag` for a version that uses a resizing
+/// Vec.  `VecBag` is similar to algs4 Java version `ResizingArrayBag`.
 ///
 /// The `add`, `isEmpty`, and `size` operations take constant time.  Iteration takes time
 /// proportional to the number of items.

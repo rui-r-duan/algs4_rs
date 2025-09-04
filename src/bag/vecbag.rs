@@ -2,7 +2,7 @@
 /// and iterating over the items in arbitrary order.
 ///
 /// This implementation uses an `std::vec::Vec`.  `VecBag` is similar to algs4 Java version
-/// `ResizingArrayBag`.  See `LinkedBag` for a version that is uses a linked list.
+/// `ResizingArrayBag`.  See `LinkedBag` for a version that uses a linked list.
 ///
 /// The `add`, `isEmpty`, and `size` operations take constant time.  Iteration takes time
 /// proportional to the number of items.
