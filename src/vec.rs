@@ -4,7 +4,8 @@
 //! The nonicon version does not have the `shrink` allocation, while this implementation does.
 //! **For the nitty-gritty, please read The Rustonomicon.**
 
-use raw_vec::RawVec;
+use raw_vec::{RawValIter, RawVec};
+use std::marker::PhantomData;
 use std::mem;
 use std::ops::{Deref, DerefMut};
 use std::ptr;
@@ -128,6 +129,33 @@ impl<T> Vec<T> {
             result
         }
     }
+
+    /// Removes the whole slice of the whole vector, returning a double-ended iterator over the
+    /// removed slice.
+    ///
+    /// If the iterator is dropped before being fully consumed, it drops the remaining removed
+    /// elements.
+    ///
+    /// The returned iterator keeps a mutable borrow on the vector to optimize its implementation.
+    ///
+    /// # Leaking
+    ///
+    /// If the returned iterator goes out of scope without being dropped (due to `mem::forget`, for
+    /// example), the vector may have lost and leaked elements arbitrarily, including elements
+    /// outside the range.
+    pub fn drain(&mut self) -> Drain<'_, T> {
+        let iter = unsafe { RawValIter::new(&self) };
+
+        // This is mem::forget safety thing.  If Drain is forgotton, we just
+        // leak the whole Vec's contents.  Also we need to do this *eventualy*
+        // anyway, so why not do it now?
+        self.len = 0;
+
+        Drain {
+            iter,
+            vec: PhantomData,
+        }
+    }
 }
 
 impl<T> Drop for Vec<T> {
@@ -156,63 +184,34 @@ impl<T> DerefMut for Vec<T> {
 
 pub struct IntoIter<T> {
     _buf: RawVec<T>, // we don't actually care about this, just need it to live
-    start: *const T,
-    end: *const T,
+    iter: RawValIter<T>,
 }
 
 impl<T> IntoIterator for Vec<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
     fn into_iter(self) -> IntoIter<T> {
-        // need to use ptr::read to unsafely move the buf out since it's
-        // not Copy, and Vec implements Drop (so we can't destructure it).
-        let buf = unsafe { ptr::read(&self.buf) };
-        let len = self.len;
+        let (iter, buf) = unsafe { (RawValIter::new(&self), ptr::read(&self.buf)) };
         mem::forget(self);
 
-        IntoIter {
-            start: buf.ptr.as_ptr(),
-            end: if buf.cap == 0 {
-                // can't offset off this pointer, it's not allocated!
-                buf.ptr.as_ptr()
-            } else {
-                unsafe { buf.ptr.as_ptr().add(len) }
-            },
-            _buf: buf,
-        }
+        IntoIter { iter, _buf: buf }
     }
 }
 
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
-        if self.start == self.end {
-            None
-        } else {
-            unsafe {
-                let result = ptr::read(self.start);
-                self.start = self.start.offset(1);
-                Some(result)
-            }
-        }
+        self.iter.next()
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = (self.end as usize - self.start as usize) / mem::size_of::<T>();
-        (len, Some(len))
+        self.iter.size_hint()
     }
 }
 
 impl<T> DoubleEndedIterator for IntoIter<T> {
     fn next_back(&mut self) -> Option<T> {
-        if self.start == self.end {
-            None
-        } else {
-            unsafe {
-                self.end = self.end.offset(-1);
-                Some(ptr::read(self.end))
-            }
-        }
+        self.iter.next_back()
     }
 }
 
@@ -220,6 +219,34 @@ impl<T> Drop for IntoIter<T> {
     fn drop(&mut self) {
         // only need to ensure all our elements are read, and thus their destructors are called;
         // buffer will clean itself up afterwards.
+        for _ in &mut *self {}
+    }
+}
+
+pub struct Drain<'a, T: 'a> {
+    vec: PhantomData<&'a mut Vec<T>>,
+    iter: RawValIter<T>,
+}
+
+impl<'a, T> Iterator for Drain<'a, T> {
+    type Item = T;
+    fn next(&mut self) -> Option<T> {
+        self.iter.next()
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.iter.size_hint()
+    }
+}
+
+impl<'a, T> DoubleEndedIterator for Drain<'a, T> {
+    fn next_back(&mut self) -> Option<T> {
+        self.iter.next_back()
+    }
+}
+
+impl<'a, T> Drop for Drain<'a, T> {
+    fn drop(&mut self) {
         for _ in &mut *self {}
     }
 }
