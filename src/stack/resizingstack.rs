@@ -1,10 +1,12 @@
+use crate::vec::Vec;
 use std::fmt;
 
-/// The `VecStack` struct represents a last-in-first-out (LIFO) stack of generic items.  It supports
+/// The `ResizingStack` struct represents a last-in-first-out (LIFO) stack of generic items.  It supports
 /// the usual `push` and `pop` operations, along with methods for peeking at the top item, testing
 /// if the stack is empty, and iterating through the items in LIFO order.
 ///
-/// This implementation uses an `std::vec::Vec`.  `VecStack` is similar to algs4 Java version
+/// This implementation uses an `crate::vec::Vec`.  Substituting `std::vec::Vec` for
+/// `crate::vec::Vec` also works.  `ResizingStack` is similar to algs4 Java version
 /// `ResizingArrayStack`.  See `LinkedStack` for a version that uses a linked list.
 ///
 /// The `push` and `pop` operations take constant amortized time.  The `len`, `peek`, and `is_empty`
@@ -12,14 +14,14 @@ use std::fmt;
 ///
 /// For additional documentation, see <a href="https://algs4.cs.princeton.edu/13stacks">Section
 /// 1.3</a> of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
-pub struct VecStack<T> {
+pub struct ResizingStack<T> {
     data: Vec<T>,
 }
 
-impl<T> VecStack<T> {
+impl<T> ResizingStack<T> {
     /// Initializes an empty stack.
     pub fn new() -> Self {
-        VecStack { data: Vec::new() }
+        ResizingStack { data: Vec::new() }
     }
 
     /// Is this stack empty?
@@ -49,26 +51,26 @@ impl<T> VecStack<T> {
     }
 
     /// Returns an iterator that iterates over the items in this stack in LIFO order.
-    pub fn iter(&self) -> VecStackIter<'_, T> {
-        VecStackIter {
+    pub fn iter(&self) -> ResizingStackIter<'_, T> {
+        ResizingStackIter {
             data: &self.data[..],
             cursor: self.data.len(), // points to the next of the top (end) Node
         }
     }
 }
 
-impl<T> Default for VecStack<T> {
+impl<T> Default for ResizingStack<T> {
     fn default() -> Self {
-        VecStack::new()
+        ResizingStack::new()
     }
 }
 
-pub struct VecStackIter<'a, T> {
+pub struct ResizingStackIter<'a, T> {
     data: &'a [T],
     cursor: usize,
 }
 
-impl<'a, T> Iterator for VecStackIter<'a, T> {
+impl<'a, T> Iterator for ResizingStackIter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
         if self.cursor > 0 {
@@ -82,8 +84,8 @@ impl<'a, T> Iterator for VecStackIter<'a, T> {
 }
 
 /// Implementing `std::fmt::Display` will automatically implement the `ToString` trait for
-/// `VecStack<T>`, allowing the usage of the `.to_string()` method.
-impl<T: fmt::Display> fmt::Display for VecStack<T> {
+/// `ResizingStack<T>`, allowing the usage of the `.to_string()` method.
+impl<T: fmt::Display> fmt::Display for ResizingStack<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut s = String::new();
         for x in self.data.iter().rev() {

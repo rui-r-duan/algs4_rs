@@ -21,7 +21,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 use algs4_rs::StdIn;
-use algs4_rs::VecBag as Bag;
+use algs4_rs::ResizingBag as Bag;
 use std::time::Instant;
 
 fn main() -> std::io::Result<()> {

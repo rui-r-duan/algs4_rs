@@ -1,10 +1,10 @@
 //! A generic bag or multiset, implemented using a singly linked list.
 
 pub mod linkedbag;
-pub mod vecbag;
+pub mod resizingbag;
 
 pub use linkedbag::*;
-pub use vecbag::*;
+pub use resizingbag::*;
 
 #[cfg(test)]
 mod tests;

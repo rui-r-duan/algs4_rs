@@ -1,8 +1,8 @@
 pub mod linkedstack;
-pub mod vecstack;
+pub mod resizingstack;
 
 pub use linkedstack::*;
-pub use vecstack::*;
+pub use resizingstack::*;
 
 #[cfg(test)]
 mod tests;

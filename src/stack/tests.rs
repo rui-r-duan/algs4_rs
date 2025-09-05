@@ -1,5 +1,5 @@
 use super::linkedstack::LinkedStack;
-use super::vecstack::VecStack;
+use super::resizingstack::ResizingStack;
 
 #[test]
 fn linked_stack_of_str() {
@@ -24,8 +24,8 @@ fn linked_stack_of_str() {
 }
 
 #[test]
-fn vec_stack_of_str() {
-    let mut st = VecStack::new();
+fn resizing_stack_of_str() {
+    let mut st = ResizingStack::new();
     assert_eq!(st.iter().collect::<Vec<&&str>>().len(), 0);
     let list = [
         "to", "be", "or", "not", "to", "-", "be", "-", "-", "that", "-", "-", "-", "is",

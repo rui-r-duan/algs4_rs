@@ -1,22 +1,25 @@
-/// The `VecBag` struct represents a bag (or multiset) of generic items.  It supports insertion
+use crate::vec::Vec;
+
+/// The `ResizingBag` struct represents a bag (or multiset) of generic items.  It supports insertion
 /// and iterating over the items in arbitrary order.
 ///
-/// This implementation uses an `std::vec::Vec`.  `VecBag` is similar to algs4 Java version
+/// This implementation uses an `crate::vec::Vec`.  Substituting `std::vec::Vec` for
+/// `crate::vec::Vec` also works.  `ResizingBag` is similar to algs4 Java version
 /// `ResizingArrayBag`.  See `LinkedBag` for a version that uses a linked list.
 ///
-/// The `add`, `isEmpty`, and `size` operations take constant time.  Iteration takes time
+/// The `add`, `is_empty`, and `size` operations take constant time.  Iteration takes time
 /// proportional to the number of items.
 ///
 /// For additional documentation, see <a href="https://algs4.cs.princeton.edu/13stacks">Section
 /// 1.3</a> of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
-pub struct VecBag<T> {
+pub struct ResizingBag<T> {
     data: Vec<T>,
 }
 
-impl<T> VecBag<T> {
+impl<T> ResizingBag<T> {
     /// Initializes an empty bag.
     pub fn new() -> Self {
-        VecBag { data: Vec::new() }
+        ResizingBag { data: Vec::new() }
     }
 
     /// Returns true if this bag is empty, returns false otherwise.
@@ -35,26 +38,26 @@ impl<T> VecBag<T> {
     }
 
     /// Returns an iterator that iterates over the items in this bag in arbitrary order.
-    pub fn iter(&self) -> VecBagIter<'_, T> {
-        VecBagIter {
+    pub fn iter(&self) -> ResizingBagIter<'_, T> {
+        ResizingBagIter {
             data: &self.data[..],
             current: 0,
         }
     }
 }
 
-impl<T> Default for VecBag<T> {
+impl<T> Default for ResizingBag<T> {
     fn default() -> Self {
-        VecBag::new()
+        ResizingBag::new()
     }
 }
 
-pub struct VecBagIter<'a, T> {
+pub struct ResizingBagIter<'a, T> {
     data: &'a [T],
     current: usize,
 }
 
-impl<'a, T> Iterator for VecBagIter<'a, T> {
+impl<'a, T> Iterator for ResizingBagIter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
         if self.current < self.data.len() {

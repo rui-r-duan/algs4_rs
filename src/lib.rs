@@ -18,3 +18,5 @@ pub use bst::*;
 pub use io::*;
 pub use linear_regression::*;
 pub use scanner::*;
+pub use stack::*;
+pub use vec::*;
