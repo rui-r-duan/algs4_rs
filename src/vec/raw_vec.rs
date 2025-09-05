@@ -59,6 +59,31 @@ impl<T> RawVec<T> {
         };
         self.cap = new_cap;
     }
+
+    pub(crate) fn shrink(&mut self) {
+        if mem::size_of::<T>() == 0 {
+            return;
+        }
+
+        let new_cap = self.cap / 2;
+        if new_cap == 0 {
+            let layout = Layout::array::<T>(self.cap).unwrap();
+            unsafe {
+                alloc::dealloc(self.ptr.as_ptr() as *mut u8, layout);
+            }
+            self.ptr = NonNull::dangling();
+        } else {
+            let new_layout = Layout::array::<T>(new_cap).unwrap();
+            let old_layout = Layout::array::<T>(self.cap).unwrap();
+            let old_ptr = self.ptr.as_ptr() as *mut u8;
+            let new_ptr = unsafe { alloc::realloc(old_ptr, old_layout, new_layout.size()) };
+            self.ptr = match NonNull::new(new_ptr as *mut T) {
+                Some(p) => p,
+                None => alloc::handle_alloc_error(new_layout),
+            }
+        }
+        self.cap = new_cap
+    }
 }
 
 impl<T> Drop for RawVec<T> {

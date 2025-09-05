@@ -68,7 +68,11 @@ impl<T> Vec<T> {
             None
         } else {
             self.len -= 1;
-            unsafe { Some(ptr::read(self.ptr().add(self.len))) }
+            let elem = unsafe { Some(ptr::read(self.ptr().add(self.len))) };
+            if self.len == self.buf.cap / 4 {
+                self.buf.shrink();
+            }
+            elem
         }
     }
 
