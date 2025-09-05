@@ -299,4 +299,38 @@ mod tests {
     /// }
     /// ```
     fn _doc_test() {}
+
+    #[derive(Debug, Eq, PartialEq)]
+    struct ZST;
+
+    impl std::fmt::Display for ZST {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            write!(f, "ZST")
+        }
+    }
+
+    #[test]
+    fn test_vec_zst() {
+        // Note: here `Vec` is not `std::vec::Vec` but `crate::vec::Vec`.
+        let mut v: Vec<ZST> = Vec::new();
+        v.push(ZST);
+        v.push(ZST);
+        v.push(ZST);
+        v.push(ZST);
+        assert_eq!(v.len(), 4);
+        assert_eq!(v.pop(), Some(ZST));
+        assert_eq!(v[0], ZST);
+        let mut itr = v.into_iter();
+        assert_eq!(itr.size_hint(), (3, Some(3)));
+        assert_eq!(itr.next(), Some(ZST));
+
+        let mut v1 = Vec::new();
+        v1.push(ZST);
+        v1.push(ZST);
+        let mut drainer = v1.drain();
+        assert_eq!(drainer.size_hint(), (2, Some(2)));
+        assert_eq!(drainer.next_back(), Some(ZST));
+        assert_eq!(drainer.next(), Some(ZST));
+        assert_eq!(drainer.next_back(), None);
+    }
 }
