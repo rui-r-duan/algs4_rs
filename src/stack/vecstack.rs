@@ -37,7 +37,8 @@ impl<T> VecStack<T> {
         self.data.push(item);
     }
 
-    /// Removes and returns the item most recently added to this stack.
+    /// Removes and returns the item most recently added to this stack, or `None` if the stack is
+    /// empty.
     pub fn pop(&mut self) -> Option<T> {
         self.data.pop()
     }
@@ -51,7 +52,7 @@ impl<T> VecStack<T> {
     pub fn iter(&self) -> VecStackIter<'_, T> {
         VecStackIter {
             data: &self.data[..],
-            cursor: self.data.len(), // points to the next of the top Node
+            cursor: self.data.len(), // points to the next of the top (end) Node
         }
     }
 }

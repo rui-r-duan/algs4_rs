@@ -60,7 +60,8 @@ impl<T> LinkedStack<T> {
         debug_assert!(self.check());
     }
 
-    /// Removes and returns the item most recently added to this stack.
+    /// Removes and returns the item most recently added to this stack, or `None` if the stack is
+    /// empty.
     pub fn pop(&mut self) -> Option<T> {
         if self.is_empty() {
             return None;

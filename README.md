@@ -9,7 +9,11 @@ Edition</a> by Robert Sedgewick and Kevin Wayne.
 My goal is to cover all the algorithms code that the [official algs4
 repo](https://github.com/kevin-wayne/algs4 "official algs4 repo") provides,
 implementing them in Rust, trying to keep the APIs compatible to the official
-Java version.
+Java version.  In some cases, the APIs are designed to be idiomatic Rust, for
+example, `len()` instead of `size()`, and `Option<&T>` instead of
+`NoSuchElementException`.
+
+I hope that this crate helps people learn both Algorithms and Rust.
 
 ## Features
 
@@ -23,14 +27,18 @@ Java version.
   std), in `examples` directory, and `LinearRegression` in a library module.
 - Standard Input `StdIn` and file input `In`, backed by the Java-util-like
   `Scanner`.  They are all implemented without any external dependency.
-  
+- Simplified but professional implementation of `Vec` to demonstrate Rust's
+  equivalences of `ResizingArrayStack`, `ResizingArrayQueue`, etc.
+
 ## How to
 
 ```
 cargo build
+cargo build --examples  # build all the example binaries
 cargo test
 cargo test -- --show-output   # show stdout
 cargo test bst   # only run the tests which contain name "bst"
+cargo run --example doubling_ratio  # only run the binary doubling_ratio
 ```
 
 Most internal modules are re-exported.  For example,

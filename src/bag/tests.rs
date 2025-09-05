@@ -10,7 +10,6 @@ fn linked_bag_of_str() {
         bag.add(s);
     }
 
-    println!("size of bag = {}", bag.len());
     assert_eq!(bag.len(), 14);
     assert_eq!(bag.iter().map(|s| *s).collect::<HashSet<&str>>(), HashSet::from(list));
 }
@@ -23,7 +22,6 @@ fn vec_bag_of_str() {
         bag.add(s);
     }
 
-    println!("size of bag = {}", bag.len());
     assert_eq!(bag.len(), 14);
     assert_eq!(bag.iter().map(|s| *s).collect::<HashSet<&str>>(), HashSet::from(list));
 }

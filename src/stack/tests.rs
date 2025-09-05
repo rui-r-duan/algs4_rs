@@ -4,6 +4,7 @@ use super::vecstack::VecStack;
 #[test]
 fn linked_stack_of_str() {
     let mut st = LinkedStack::new();
+    assert_eq!(st.iter().collect::<Vec<&&str>>().len(), 0);
     let list = [
         "to", "be", "or", "not", "to", "-", "be", "-", "-", "that", "-", "-", "-", "is",
     ];
@@ -25,6 +26,7 @@ fn linked_stack_of_str() {
 #[test]
 fn vec_stack_of_str() {
     let mut st = VecStack::new();
+    assert_eq!(st.iter().collect::<Vec<&&str>>().len(), 0);
     let list = [
         "to", "be", "or", "not", "to", "-", "be", "-", "-", "that", "-", "-", "-", "is",
     ];
