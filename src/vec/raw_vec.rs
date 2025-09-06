@@ -170,3 +170,24 @@ impl<T> DoubleEndedIterator for RawValIter<T> {
         }
     }
 }
+
+impl<T> Clone for RawVec<T> {
+    fn clone(&self) -> Self {
+        if self.cap == 0 {
+            RawVec {
+                ptr: NonNull::dangling(),
+                cap: self.cap,
+            }
+        } else {
+            let layout = Layout::array::<T>(self.cap).unwrap();
+            let new_ptr = unsafe { alloc::alloc(layout) };
+            RawVec {
+                ptr: match NonNull::new(new_ptr as *mut T) {
+                    Some(p) => p,
+                    None => alloc::handle_alloc_error(layout),
+                },
+                cap: self.cap,
+            }
+        }
+    }
+}

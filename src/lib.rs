@@ -10,6 +10,8 @@ pub mod threesum;
 pub mod threesum_fast;
 pub mod twosum;
 pub mod twosum_fast;
+
+#[macro_use]
 pub mod vec;
 
 pub use bag::*;

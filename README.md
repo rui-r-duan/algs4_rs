@@ -27,8 +27,8 @@ I hope that this crate helps people learn both Algorithms and Rust.
   std), in `examples` directory, and `LinearRegression` in a library module.
 - Standard Input `StdIn` and file input `In`, backed by the Java-util-like
   `Scanner`.  They are all implemented without any external dependency.
-- Simplified but professional implementation of `Vec` to demonstrate Rust's
-  equivalences of `ResizingArrayStack`, `ResizingArrayQueue`, etc.
+- Simplified but professional implementation of vector `SVec` to demonstrate
+  Rust's equivalences of `ResizingArrayStack`, `ResizingArrayQueue`, etc.
 
 ## How to
 

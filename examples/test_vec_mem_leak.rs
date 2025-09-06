@@ -6,20 +6,20 @@
 //! ```
 
 fn main() {
-    // In a `algs4_rs::vec::Vec<T>`, the internal buffer should be freed, all the elements in the
-    // Vec should be freed.
+    // In a `algs4_rs::vec::SVec<T>`, the internal buffer should be freed, all the elements in the
+    // SVec should be freed.
 
-    // Use `algs4_rs::vec::Vec<&str>` to test the deallocation of internal buffer.
+    // Use `algs4_rs::vec::SVec<&str>` to test the deallocation of internal buffer.
 
-    // use `algs4_rs::vec::Vec<String>` to test the deallocation of String elements.
+    // use `algs4_rs::vec::SVec<String>` to test the deallocation of String elements.
 
-    // use `algs4_rs::vec::Vec<String>::into_iter()` to test the proper memory deallocation of
+    // use `algs4_rs::vec::SVec<String>::into_iter()` to test the proper memory deallocation of
     // `algs4_rs::vec::IntoIter<String>`.
 
-    // Feel free to modify `algs_rs::vec::Vec<T>`'s memory allocation/deallocation related code to
+    // Feel free to modify `algs_rs::vec::SVec<T>`'s memory allocation/deallocation related code to
     // test cases of memory leak.
 
-    let mut v: algs4_rs::vec::Vec<String> = algs4_rs::vec::Vec::new();
+    let mut v: algs4_rs::vec::SVec<String> = algs4_rs::vec::SVec::new();
     v.push("hello".to_string());
     v.push("algs4".to_string());
     v.push("rs".to_string());

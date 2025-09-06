@@ -5,6 +5,7 @@
 //! **For the nitty-gritty, please read The Rustonomicon.**
 
 use raw_vec::{RawValIter, RawVec};
+use std::fmt;
 use std::marker::PhantomData;
 use std::mem;
 use std::ops::{Deref, DerefMut};
@@ -12,15 +13,16 @@ use std::ptr;
 
 mod raw_vec;
 
-pub struct Vec<T> {
+/// `SVec` stands for Simple Vector.
+pub struct SVec<T> {
     buf: RawVec<T>,
     len: usize,
 }
 
-impl<T> Vec<T> {
-    /// Create an empty `Vec` which does not allocate any memory.
+impl<T> SVec<T> {
+    /// Create an empty `SVec` which does not allocate any memory.
     pub fn new() -> Self {
-        Vec {
+        SVec {
             buf: RawVec::new(),
             len: 0,
         }
@@ -35,7 +37,7 @@ impl<T> Vec<T> {
     }
 
     /// Appends an element to the back of a collection.  The value of variable `elem` is moved
-    /// into this `Vec` so that this `Vec` owns it.
+    /// into this `SVec` so that this `SVec` owns it.
     ///
     /// # Panics
     ///
@@ -57,7 +59,7 @@ impl<T> Vec<T> {
         self.len += 1;
     }
 
-    /// Removes and returns the element most recently added to this `Vec`, or `None` if this `Vec`
+    /// Removes and returns the element most recently added to this `SVec`, or `None` if this `SVec`
     /// is empty.
     ///
     /// # Time complexity
@@ -85,7 +87,7 @@ impl<T> Vec<T> {
     ///
     /// # Time complexity
     ///
-    /// Takes *O*(`Vec::len`) time.  All items after the insertion index must be shifted to the
+    /// Takes *O*(`SVec::len`) time.  All items after the insertion index must be shifted to the
     /// right.  In the worst case, all elements are shifted when the insertion index is 0.
     pub fn insert(&mut self, index: usize, elem: T) {
         // Note: `<=` because it's valid to insert after everything which would be equivalent to
@@ -151,7 +153,7 @@ impl<T> Vec<T> {
         let iter = unsafe { RawValIter::new(&self) };
 
         // This is mem::forget safety thing.  If Drain is forgotton, we just
-        // leak the whole Vec's contents.  Also we need to do this *eventualy*
+        // leak the whole SVec's contents.  Also we need to do this *eventualy*
         // anyway, so why not do it now?
         self.len = 0;
 
@@ -162,7 +164,7 @@ impl<T> Vec<T> {
     }
 }
 
-impl<T> Drop for Vec<T> {
+impl<T> Drop for SVec<T> {
     fn drop(&mut self) {
         while let Some(_) = self.pop() {}
         // deallocation is handled by RawVec
@@ -171,7 +173,7 @@ impl<T> Drop for Vec<T> {
 
 /// Coerce `Vec<T>` to slice `[T]`.  A slice provides all sorts of bells and whistles such as `len`,
 /// `first`, `last`, indexing, slicing, sorting, `iter`, `iter_mut`, etc.
-impl<T> Deref for Vec<T> {
+impl<T> Deref for SVec<T> {
     type Target = [T];
     fn deref(&self) -> &[T] {
         unsafe { std::slice::from_raw_parts(self.ptr(), self.len) }
@@ -180,7 +182,7 @@ impl<T> Deref for Vec<T> {
 
 /// Coerce `Vec<T>` to slice `[T]`.  A slice provides all sorts of bells and whistles such as `len`,
 /// `first`, `last`, indexing, slicing, sorting, `iter`, `iter_mut`, etc.
-impl<T> DerefMut for Vec<T> {
+impl<T> DerefMut for SVec<T> {
     fn deref_mut(&mut self) -> &mut [T] {
         unsafe { std::slice::from_raw_parts_mut(self.ptr(), self.len) }
     }
@@ -191,7 +193,7 @@ pub struct IntoIter<T> {
     iter: RawValIter<T>,
 }
 
-impl<T> IntoIterator for Vec<T> {
+impl<T> IntoIterator for SVec<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
     fn into_iter(self) -> IntoIter<T> {
@@ -228,7 +230,7 @@ impl<T> Drop for IntoIter<T> {
 }
 
 pub struct Drain<'a, T: 'a> {
-    vec: PhantomData<&'a mut Vec<T>>,
+    vec: PhantomData<&'a mut SVec<T>>,
     iter: RawValIter<T>,
 }
 
@@ -255,22 +257,85 @@ impl<'a, T> Drop for Drain<'a, T> {
     }
 }
 
+impl<T: Clone> Clone for SVec<T> {
+    fn clone(&self) -> Self {
+        let mut v = SVec {
+            buf: self.buf.clone(),
+            len: 0,
+        };
+        for elem in self.iter() {
+            v.push(elem.clone());
+        }
+        v
+    }
+}
+
+impl<T: fmt::Debug> fmt::Debug for SVec<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[")?;
+        for (i, x) in self.iter().enumerate() {
+            fmt::Debug::fmt(x, f)?;
+            if i < self.len() - 1 {
+                write!(f, ", ")?;
+            }
+        }
+        write!(f, "]")
+    }
+}
+
+impl<T> std::iter::FromIterator<T> for SVec<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> SVec<T> {
+        let mut v = SVec::new();
+        for x in iter {
+            v.push(x);
+        }
+        v
+    }
+}
+
+impl<T> Default for SVec<T> {
+    fn default() -> Self {
+        SVec::new()
+    }
+}
+
+/// Similar to macro `std::vec`.  See the documentation of macro `std::vec`.
+///
+/// Unlike array expressions, form `svec![T; N]` requires that `T` implements `Clone` trait instead
+/// of `Copy` which is required by an array, and `N` does not have to be a constant.
+#[macro_export]
+macro_rules! svec {
+    () => (
+        $crate::vec::SVec::new()
+    );
+    ($elem:expr; $n:expr) => ({
+        let mut v = $crate::vec::SVec::new();
+        for _i in 0..$n {
+            v.push($elem.clone());
+        }
+        v
+    });
+    ($($x:expr),+ $(,)?) => ({
+        let mut v = $crate::vec::SVec::new();
+        $(
+            v.push($x);
+        )*
+        v
+    });
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_vec_basics() {
-        let mut v: Vec<&str> = Vec::new();
+        let mut v: SVec<&str> = SVec::new();
         v.push("hello");
         v.push("algs4");
         v.push("rs");
         v.push("lib");
         assert_eq!(v.len(), 4);
-        assert_eq!(
-            v.iter().cloned().collect::<std::vec::Vec<_>>(),
-            ["hello", "algs4", "rs", "lib"]
-        );
         assert_eq!(v.pop(), Some("lib"));
         assert_eq!(&v[2], &"rs");
         assert_eq!(v.pop(), Some("rs"));
@@ -284,19 +349,17 @@ mod tests {
 
     /// Compared to `std::vec::Vec`, our implementation is more strict.
     ///
-    /// The following example code will not compile.  But it is OK.
-    /// We do not allow such use.
+    /// The following example code will not compile.  But it is OK.  We do not allow such use.
     ///
     /// Making it compile requires relaxing the drop checker's conservative assumption which does
     /// not allow `T` (`&str` in this example) to dangle.
     ///
-    /// To relax the borrow checking condition, we need to use the unstable
-    /// feature: attribute `#[may_dangle]`, which does not compile in stable
-    /// Rust.
+    /// To relax the borrow checking condition, we need to use the unstable feature: attribute
+    /// `#[may_dangle]`, which does not compile in stable Rust.
     ///
     /// ```compile_fail,E0597
     /// fn test_may_dangle() {
-    ///     let mut v: Vec<&str> = Vec::new();
+    ///     let mut v: SVec<&str> = SVec::new();
     ///     let s: String = "Short-lived".into();
     ///     v.push(&s); // borrowed value &s does not live long enough
     ///     drop(s);
@@ -315,8 +378,7 @@ mod tests {
 
     #[test]
     fn test_vec_zst() {
-        // Note: here `Vec` is not `std::vec::Vec` but `crate::vec::Vec`.
-        let mut v: Vec<ZST> = Vec::new();
+        let mut v: SVec<ZST> = SVec::new();
         v.push(ZST);
         v.push(ZST);
         v.push(ZST);
@@ -328,7 +390,7 @@ mod tests {
         assert_eq!(itr.size_hint(), (3, Some(3)));
         assert_eq!(itr.next(), Some(ZST));
 
-        let mut v1 = Vec::new();
+        let mut v1 = SVec::new();
         v1.push(ZST);
         v1.push(ZST);
         let mut drainer = v1.drain();
@@ -336,5 +398,82 @@ mod tests {
         assert_eq!(drainer.next_back(), Some(ZST));
         assert_eq!(drainer.next(), Some(ZST));
         assert_eq!(drainer.next_back(), None);
+    }
+
+    #[test]
+    fn test_vec_clone() {
+        let mut v: SVec<String> = SVec::new();
+        v.push(String::from("memcpy"));
+        v.push(String::from("memmove"));
+        v.push(String::from("diff"));
+
+        let u = v.clone();
+        assert_eq!(u[0], v[0]);
+        assert_eq!(u[1], v[1]);
+        assert_eq!(u[2], v[2]);
+        assert_eq!(u.len(), v.len());
+    }
+
+    #[test]
+    fn test_vec_macro() {
+        let v: SVec<f64> = svec![];
+        assert_eq!(v.len(), 0);
+        assert_eq!(format!("{:?}", v), "[]");
+
+        let v = svec![2, 3, 4];
+        let s = format!("{:?}", v);
+        assert_eq!(s, "[2, 3, 4]");
+
+        let v = svec!["no"; 0];
+        assert_eq!(v.len(), 0);
+
+        let non_const = 4;
+        let v = svec!["no"; non_const];
+        assert_eq!(v.len(), non_const);
+        assert_eq!(
+            v.iter().cloned().collect::<Vec<_>>(),
+            ["no", "no", "no", "no"]
+        );
+
+        let v = svec![
+            "Rustonomicon".to_string(),
+            "dark".to_string(),
+            "magic".to_string()
+        ];
+        assert_eq!(v.len(), 3);
+        assert_eq!(
+            v.iter().cloned().collect::<Vec<_>>(),
+            ["Rustonomicon", "dark", "magic"]
+        );
+    }
+
+    #[test]
+    fn test_vec_from_iterator() {
+        let mut v: SVec<&str> = SVec::default();
+        v.push("aaa");
+        v.push("bbb");
+
+        let x: SVec<&str> = v.iter().cloned().collect();
+
+        //----------------------------------------------------------------
+        // The following two lines do not compile.
+        // Because `assert_eq` macro does `match (&$left, &$right)` and `(*left_val == *right_val)`.
+        // So `==` is applied on the left `$lhs` and the right `$rhs`.
+        //
+        // `std::vec::Vec` implements a lot of `PartialEq<$rhs> for $lhs` using an internal
+        // macro `__impl_slice_eq1` to achieve the ergonomic.
+        //----------------------------------------------------------------
+        // assert_eq!(&x, &["aaa", "bbb"]);  // &SVec<&str> == &[&str; 2]
+        // assert_eq!(x, ["aaa", "bbb"]);    // SVec<&str> == [&str; 2]
+
+        assert_eq!(x[..], ["aaa", "bbb"][..]); // [&str] == [&str]
+
+        fn str_slice_eq(a: &[&str], b: &[&str]) -> bool {
+            a == b
+        }
+        str_slice_eq(&x, &["aaa", "bbb"]);
+
+        let y: Vec<&str> = v.iter().cloned().collect();
+        assert_eq!(y, ["aaa", "bbb"],); // Vec<&str> == [&str; 2]
     }
 }
