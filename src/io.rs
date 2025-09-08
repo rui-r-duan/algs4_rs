@@ -1,21 +1,25 @@
+use crate::primitive::{PrimFloat, PrimInt};
 use crate::scanner::Scanner;
-use std::io;
-use std::io::Read;
+use std::fs::File;
+use std::io::BufReader;
 use std::io::StdinLock;
+use std::io::{self, BufRead};
+use std::ops::{Deref, DerefMut};
+use std::str::FromStr;
 
-pub struct StdIn {
-    scanner: Scanner<StdinLock<'static>>,
+pub struct In<B: BufRead> {
+    scanner: Scanner<B>,
 }
 
-impl StdIn {
-    /// Creates a new instance of StdIn.
-    pub fn new() -> Self {
-        StdIn {
-            scanner: Scanner::new(io::stdin().lock()),
+impl<B: BufRead> In<B> {
+    /// Creates a new instance of BaseInput.
+    pub fn new(bufread: B) -> Self {
+        In {
+            scanner: Scanner::new(bufread),
         }
     }
 
-    /// Returns true of the standard input has more data, returns false otherwise.
+    /// Returns true if the input stream has more data, returns false otherwise.
     pub fn is_empty(&mut self) -> bool {
         match self.scanner.has_next() {
             Ok(b) => !b,
@@ -23,41 +27,33 @@ impl StdIn {
         }
     }
 
-    /// Reads an i32 from stdin.
-    pub fn read_i32(&mut self) -> io::Result<i32> {
-        self.scanner.next_i32()
+    /// Reads an integer from the input stream.
+    ///
+    /// The integer type is one of `i8`, `i16`, `i32`, `i64`, `i128`, `isize`, `u8`, `u16`, `u32`,
+    /// `u64`, `u128`, or `usize`.
+    pub fn read_int<T>(&mut self) -> io::Result<T>
+    where
+        T: PrimInt + FromStr,
+    {
+        self.scanner.next_int::<T>()
     }
 
-    /// Reads an i64 from stdin.
-    pub fn read_i64(&mut self) -> io::Result<i64> {
-        self.scanner.next_i64()
+    /// Reads a floating point number from the input stream.
+    ///
+    /// The integer type is one of `f32` or `f64`.
+    pub fn read_float<T>(&mut self) -> io::Result<T>
+    where
+        T: PrimFloat + FromStr,
+    {
+        self.scanner.next_float::<T>()
     }
 
-    /// Reads all 32-bit integers (i32) from stdin, consuming all the
-    /// content in stdin.
-    pub fn read_all_i32() -> io::Result<Vec<i32>> {
-        let mut stdin = io::stdin();
-        let mut all = String::new();
-        stdin.read_to_string(&mut all)?;
-        let mut list = Vec::new();
-        for t in all.split_ascii_whitespace() {
-            match t.parse::<i32>() {
-                Ok(n) => {
-                    list.push(n);
-                }
-                Err(e) => {
-                    eprintln!("got error: {}", e);
-                    return Err(io::Error::from(io::ErrorKind::InvalidData));
-                }
-            }
-        }
-        Ok(list)
-    }
-
-    /// Reads all 32-bit integers (i32) from stdin using `Scanner`,
-    /// consuming all the content in stdin, reading the content in a
-    /// token-by-token streaming mode.
-    pub fn read_all_i32_streaming(&mut self) -> io::Result<Vec<i32>> {
+    /// Reads all integers from the input stream using the internal scanner, consuming all the
+    /// content in the input stream, reading the content in a token-by-token streaming mode.
+    pub fn read_all_ints<T>(&mut self) -> io::Result<Vec<T>>
+    where
+        T: PrimInt + FromStr,
+    {
         let mut list = Vec::new();
         loop {
             let hasnext = self.scanner.has_next()?;
@@ -65,73 +61,60 @@ impl StdIn {
                 break;
             }
 
-            let t = self.scanner.next_i32()?;
+            let t = self.scanner.next_int::<T>()?;
             list.push(t);
         }
         Ok(list)
     }
 
-    /// Read a string token from stdin.
+    /// Read a string token from the input stream.
     pub fn read_string(&mut self) -> io::Result<String> {
         self.scanner.next_token()
     }
 }
 
-impl Default for StdIn {
-    fn default() -> Self {
-        Self::new()
+/// algs4_rs's standard input
+pub struct StdIn(In<StdinLock<'static>>);
+
+impl Deref for StdIn {
+    type Target = In<StdinLock<'static>>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
-pub struct In {
-    file_path: String,
+impl DerefMut for StdIn {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
 }
 
-impl In {
+impl StdIn {
+    pub fn new() -> Self {
+        StdIn(In::new(io::stdin().lock()))
+    }
+}
+
+/// algs4_rs's file input
+pub struct FileIn(In<BufReader<File>>);
+
+impl Deref for FileIn {
+    type Target = In<BufReader<File>>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for FileIn {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl FileIn {
     /// Creates a new instance of In.
-    pub fn new(path: &str) -> Self {
-        In {
-            file_path: path.to_string(),
-        }
-    }
-
-    /// Read all 32-bit integers (i32) from stdin, consuming all the
-    /// content in stdin.
-    pub fn read_all_i32(&self) -> io::Result<Vec<i32>> {
-        let mut f = std::fs::File::open(self.file_path.as_str())?;
-        let mut all = String::new();
-        f.read_to_string(&mut all)?;
-        let mut list = Vec::new();
-        for t in all.split_ascii_whitespace() {
-            match t.parse::<i32>() {
-                Ok(n) => {
-                    list.push(n);
-                }
-                Err(_e) => {
-                    return Err(io::Error::from(io::ErrorKind::InvalidData));
-                }
-            }
-        }
-        Ok(list)
-    }
-
-    /// Read all 64-bit integers (i64) from stdin, consuming all the
-    /// content in stdin.
-    pub fn read_all_i64(&self) -> io::Result<Vec<i64>> {
-        let mut f = std::fs::File::open(self.file_path.as_str())?;
-        let mut all = String::new();
-        f.read_to_string(&mut all)?;
-        let mut list = Vec::new();
-        for t in all.split_ascii_whitespace() {
-            match t.parse::<i64>() {
-                Ok(n) => {
-                    list.push(n);
-                }
-                Err(_e) => {
-                    return Err(io::Error::from(io::ErrorKind::InvalidData));
-                }
-            }
-        }
-        Ok(list)
+    pub fn new(path: &str) -> io::Result<Self> {
+        let f = std::fs::File::open(path)?;
+        Ok(FileIn(In::new(BufReader::new(f))))
     }
 }

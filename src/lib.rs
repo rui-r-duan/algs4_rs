@@ -11,6 +11,8 @@ pub mod threesum_fast;
 pub mod twosum;
 pub mod twosum_fast;
 
+mod primitive;
+
 #[macro_use]
 pub mod vec;
 

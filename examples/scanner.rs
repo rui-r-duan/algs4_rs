@@ -12,7 +12,7 @@ fn main() -> std::io::Result<()> {
 
     print!("Type an i32: ");
     std::io::stdout().flush()?;
-    let a = scanner.next_i32()?;
+    let a = scanner.next_int::<i32>()?;
     println!("Your int was: {}", a);
     println!();
 
@@ -32,8 +32,8 @@ fn main() -> std::io::Result<()> {
         Err(e) => {
             println!("{e}"); // You can also try `println!("{e:?}");`.
             // If we do not consume the invalid-bool token, then
-            // the following `next_f64` would consume the token, which
-            // yields an error.
+            // the following `next_*` (if any, e.g. `next_float`) would consume the token, which
+            // yields an error.  So we need to consume the invalid-bool token here.
             let t = scanner.next_token()?;
             println!("Consuming (fetching) the next token ... it was {}", t);
             println!();
@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
 
     print!("Type an f64, optaionally followed by whitespaces and some words: ");
     std::io::stdout().flush()?;
-    let c = scanner.next_f64()?;
+    let c = scanner.next_float::<f64>()?;
     println!("Your f64 was: {}", c);
     println!();
 

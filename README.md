@@ -10,10 +10,15 @@ My goal is to cover all the algorithms code that the [official algs4
 repo](https://github.com/kevin-wayne/algs4 "official algs4 repo") provides,
 implementing them in Rust, trying to keep the APIs compatible to the official
 Java version.  In some cases, the APIs are designed to be idiomatic Rust, for
-example, `len()` instead of `size()`, and `Option<&T>` instead of
+example, I/O APIs, `len()` instead of `size()`, and `Option<&T>` instead of
 `NoSuchElementException`.
 
 I hope that this crate helps people learn both Algorithms and Rust.
+
+## Warning
+
+The I/O APIs are not stable.  Breaking changes may be made in the versions `0.y.z`.
+The current versions are good for learning, though.
 
 ## Features
 
@@ -25,10 +30,12 @@ I hope that this crate helps people learn both Algorithms and Rust.
 - Clients in `examples` directory.
 - Big-O analysis tools: `DoublingTest`, `DoublingRatio`, Stop Watch (using Rust
   std), in `examples` directory, and `LinearRegression` in a library module.
-- Standard Input `StdIn` and file input `In`, backed by the Java-util-like
-  `Scanner`.  They are all implemented without any external dependency.
+- Standard Input `StdIn`, file input `FileIn`, and abstract versatile input
+  `In`, backed by the Java-util-like `Scanner`.  They are all implemented
+  without any external dependency.
 - Simplified but professional implementation of vector `SVec` to demonstrate
   Rust's equivalences of `ResizingArrayStack`, `ResizingArrayQueue`, etc.
+  Advanced Rust is demonstrated in `SVec`.
 
 ## How to
 

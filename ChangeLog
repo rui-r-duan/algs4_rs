@@ -1,0 +1,80 @@
+2025-09-08  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.4.0
+
+	* src/vec.rs: Rename `Vec` to `SVec`.  Add ergonomic features:
+	Clone, Debug, FromIterator (used by `iterator::collect()),
+	Default, and macro `svec`.
+
+	* src/scanner.rs: BREAKING CHANGES.
+	- Delete old methods `next_i32`, `next_i64`, next_f64`.
+	- Add new methods with generic methods: `next_int<T>`,
+	`next_float<T>`.
+
+	* src/io.rs: BREAKING CHANGES.
+	- Rename file input `In` to `FileIn`.
+	- Create new `In` as a versatile base, and let `StdIn` and `FileIn`
+	"inherit" from `In`.  The inheritance is simulated by `Deref` and
+	`DerefMut`.
+	- `read_all_i32` is changed to generic method `read_all_ints<T>`.
+	Sematic change: the old file input `read_all_i32` opens a new file
+	handle to read the whole file, while the new `read_all_ints` uses
+	the internal `Scanner` to continue from the current cursor to read
+	to the end of the file.
+
+	* src/primitive.rs: Add traits `PrimInt` and `PrimFloat`.  They
+	are used for trait bounds for integers and floating point types.
+
+2025-09-05  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.3.0
+
+	* src/vec.rs: Add complete vector implementation
+	`algs4_rs::vec::Vec`.
+
+	* src/stack.rs: Add Linked-list Stack `src/stack/linkedstack.rs`
+	and `algs4_rs::vec::Vec`-based stack `src/stack/resizingstack.rs`.
+
+	* src/bag/resizingbag.rs: Change `src/bag/vecbag.rs` to
+	`src/bag/resizingbag.rs` and replace the backend `std::vec::Vec`
+	with our `algs4_rs::vec::Vec`.
+
+	* examples/test_vec_mem_leak.rs: Add a template for testing memory
+	leak.
+
+2025-09-02  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.2.0
+
+	* src/bag.rs: Add Linked-list Bag `src/bag/linkedbag.rs` and
+	`std::vec::Vec`-based bag `src/bag/vecbag.rs`.
+
+	* src/io.rs: Add method `StdIn::read_string`.
+
+2025-08-28  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.1.0
+
+	* src/bst.rs, examples/bst.rs: Add binary search tree and example
+	client.
+
+	* src/binary_search.rs, examples/binary_search.rs: Add binary
+	search algorithm for integers, add example client.
+
+	* src/linear_regression.rs: Add `LinearRegression` utility.
+
+	* src/twosun.rs, src/twosum_fast.rs: Add Two-Sum algorithm.
+
+	* src/threesum.rs, src/threesum_fast.rs: Add Three-Sum algorithm.
+
+	* src/scanner.rs: Add `Scanner` utility for streaming input.
+
+	* src/io.rs: Add `StdIn` and `In` (for file input) utilities.
+
+	* src/error.rs: Add `Algs4Error` type.
+
+	* examples/doubling_ratio.rs: Add example program for Doubling
+	Ratio method.
+
+	* examples/doubling_test.rs: Add example program for Doubling Test
+	method.

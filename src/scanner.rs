@@ -10,9 +10,8 @@
 //! methods:
 //! - `has_next`
 //! - `next_token`
-//! - `next_i32`
-//! - `next_i64`
-//! - `next_f64`
+//! - `next_int`
+//! - `next_float`
 //! - `next_bool`
 //!
 //! # Mode 2: line-by-line (delimiter: U+000A LF)
@@ -20,8 +19,10 @@
 //! - `has_next_line`
 //! - `next_line`
 
+use crate::primitive::{PrimFloat, PrimInt};
 use std::io;
 use std::io::BufRead;
+use std::str::FromStr;
 
 pub struct Scanner<B: BufRead> {
     bufread: B,
@@ -290,13 +291,14 @@ impl<B: BufRead> Scanner<B> {
         }
     }
 
-    /// Reads the next token as an `i32`.
+    /// Reads the next token as a primitive integer (aka `i8`, `i16`, `i32`, `i64`, `i128`, `isize`,
+    /// `u8`, `u16`, `u32`, `u64`, `u128`, `usize`).
     ///
     /// # Errors
     ///
-    /// If no such i32 is found, return IO Error `NotFound`.
+    /// If no such integer is found, return IO Error `NotFound`.
     ///
-    /// If the next token is not a valid i32, return IO Error `InvalidData`.
+    /// If the next token is not a valid integer, return IO Error `InvalidData`.
     ///
     /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
     /// `Interrupted`, because it is handled (ignored) in this method.
@@ -304,10 +306,13 @@ impl<B: BufRead> Scanner<B> {
     /// If any Error (including `NotFound`) is returned, then the input stream's cursor is not
     /// changed, which means that if the client calls another `next_*` method immediately, the next
     /// entity (if fetched successfully) contains the characters of this invalid token.  For
-    /// example, the next token is not a valid i32, but the token is a valid UTF-8 string, then it
-    /// may be a valid bool for the next call to `next_bool`, or the next call to `next_line` will
-    /// include this token in the line.
-    pub fn next_i32(&mut self) -> io::Result<i32> {
+    /// example, the next token is not a valid integer, but the token is a valid UTF-8 string, then
+    /// it may be a valid bool for the next call to `next_bool`, or the next call to `next_line`
+    /// will include this token in the line.
+    pub fn next_int<T>(&mut self) -> io::Result<T>
+    where
+        T: PrimInt + FromStr,
+    {
         if !self.token_peeked {
             self.peek_next()?;
         }
@@ -315,7 +320,7 @@ impl<B: BufRead> Scanner<B> {
             Err(std::io::Error::from(std::io::ErrorKind::NotFound))
         } else {
             let s = self.next_token.as_ref().unwrap();
-            match s.parse::<i32>() {
+            match s.parse::<T>() {
                 Ok(v) => {
                     self.mark_token_consumed();
                     Ok(v)
@@ -325,48 +330,13 @@ impl<B: BufRead> Scanner<B> {
         }
     }
 
-    /// Reads the next token as an `i64`.
+    /// Reads the next token as a primitive floating point type (aka `f32` and `f64`).
     ///
     /// # Errors
     ///
-    /// If no such i64 is found, return IO Error `NotFound`.
+    /// If no such floating point number is found, return IO Error `NotFound`.
     ///
-    /// If the next token is not a valid i64, return IO Error `InvalidData`.
-    ///
-    /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
-    /// `Interrupted`, because it is handled (ignored) in this method.
-    ///
-    /// If any Error (including `NotFound`) is returned, then the input stream's cursor is not
-    /// changed, which means that if the client calls another `next_*` method immediately, the next
-    /// entity (if fetched successfully) contains the characters of this invalid token.  For
-    /// example, the next token is not a valid i64, but the token is a valid UTF-8 string, then it
-    /// may be a valid bool for the next call to `next_bool`, or the next call to `next_line` will
-    /// include this token in the line.
-    pub fn next_i64(&mut self) -> io::Result<i64> {
-        if !self.token_peeked {
-            self.peek_next()?;
-        }
-        if self.next_token.is_none() {
-            Err(std::io::Error::from(std::io::ErrorKind::NotFound))
-        } else {
-            let s = self.next_token.as_ref().unwrap();
-            match s.parse::<i64>() {
-                Ok(v) => {
-                    self.mark_token_consumed();
-                    Ok(v)
-                }
-                Err(_e) => Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
-            }
-        }
-    }
-
-    /// Reads the next token as an `f64`.
-    ///
-    /// # Errors
-    ///
-    /// If no such f64 is found, return IO Error `NotFound`.
-    ///
-    /// If the next token is not a valid f64, return IO Error `InvalidData`.
+    /// If the next token is not a valid floating point number, return IO Error `InvalidData`.
     ///
     /// If any IO Errors is encountered, return it as `Err`.  This method does not return IO Error
     /// `Interrupted`, because it is handled (ignored) in this method.
@@ -377,7 +347,10 @@ impl<B: BufRead> Scanner<B> {
     /// example, the next token is not a valid f64, but the token is a valid UTF-8 string, then it
     /// may be a valid bool for the next call to `next_bool`, or the next call to `next_line` will
     /// include this token in the line.
-    pub fn next_f64(&mut self) -> io::Result<f64> {
+    pub fn next_float<T>(&mut self) -> io::Result<T>
+    where
+        T: PrimFloat + FromStr,
+    {
         if !self.token_peeked {
             self.peek_next()?;
         }
@@ -385,7 +358,7 @@ impl<B: BufRead> Scanner<B> {
             Err(std::io::Error::from(std::io::ErrorKind::NotFound))
         } else {
             let s = self.next_token.as_ref().unwrap();
-            match s.parse::<f64>() {
+            match s.parse::<T>() {
                 Ok(v) => {
                     self.mark_token_consumed();
                     Ok(v)
@@ -410,8 +383,8 @@ impl<B: BufRead> Scanner<B> {
     /// changed, which means that if the client calls another `next_*` method immediately, the next
     /// entity (if fetched successfully) contains the characters of this invalid token.  For
     /// example, the next token is not a valid bool, but the token is a valid UTF-8 string, then it
-    /// may be a valid i32 for the next call to `next_i32`, or the next call to `next_line` will
-    /// include this token in the line.
+    /// may be a valid i32 for the next call to `next_int::<i32>`, or the next call to `next_line`
+    /// will include this token in the line.
     pub fn next_bool(&mut self) -> io::Result<bool> {
         if !self.token_peeked {
             self.peek_next()?;
@@ -559,7 +532,7 @@ mod tests {
         let mut scanner = Scanner::new(cursor);
 
         println!("--- Testing Token-by-Token Scanning ---");
-        let r = scanner.next_i32();
+        let r = scanner.next_int::<i32>();
         // Consumes "10"
         assert!(r.is_ok());
         let num = r.unwrap();
