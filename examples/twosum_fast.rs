@@ -1,5 +1,5 @@
 use algs4_rs::FileIn;
-use algs4_rs::error::Algs4Error;
+use algs4_rs::Algs4Error;
 use algs4_rs::twosum_fast;
 use std::env;
 use std::time::Instant;

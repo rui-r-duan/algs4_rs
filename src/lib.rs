@@ -1,29 +1,32 @@
-pub mod bag;
-pub mod binary_search;
-pub mod bst;
-pub mod error;
-pub mod graph;
-pub mod io;
-pub mod linear_regression;
-pub mod scanner;
-pub mod stack;
+pub(crate) mod bag;
+pub(crate) mod binary_search;
+pub(crate) mod bst;
+pub(crate) mod error;
+pub(crate) mod graph;
+pub(crate) mod io;
+pub(crate) mod linear_regression;
+pub(crate) mod primitive;
+pub(crate) mod scanner;
+pub(crate) mod stack;
 pub mod threesum;
 pub mod threesum_fast;
 pub mod twosum;
 pub mod twosum_fast;
 
-pub mod primitive;
-
 #[macro_use]
-pub mod vec;
+pub(crate) mod vec;
 
-pub use bag::*;
+pub use bag::linkedbag::*;
+pub use bag::resizingbag::*;
 pub use binary_search::*;
 pub use bst::*;
-pub use graph::*;
+pub use error::*;
+pub use graph::Graph;
+pub use graph::path::*;
 pub use io::*;
 pub use linear_regression::*;
 pub use primitive::*;
 pub use scanner::*;
-pub use stack::*;
+pub use stack::linkedstack::*;
+pub use stack::resizingstack::*;
 pub use vec::*;

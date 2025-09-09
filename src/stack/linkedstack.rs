@@ -1,11 +1,12 @@
 use std::fmt;
 
-/// The `LinkedStack` struct represents a last-in-first-out (LIFO) stack of generic items.  It
-/// supports the usual `push` and `pop` operations, along with methods for peeking at the top item,
-/// testing if the stack is empty, and iterating through the items in LIFO order.
+/// A last-in-first-out (LIFO) stack of generic items.
 ///
-/// This implementation uses a singly linked list.  See `VecStack` for a version that uses a
-/// resizing Vec.
+/// It supports the usual `push` and `pop` operations, along with methods for peeking at the top
+/// item, testing if the stack is empty, and iterating through the items in LIFO order.
+///
+/// This implementation uses a singly linked list.  See [`crate::ResizingStack`] for a version that
+/// uses a resizing Vec.
 ///
 /// The `push`, `pop`, `peek`, `len`, and `is_empty` operations all take constant time in the worst case.
 ///

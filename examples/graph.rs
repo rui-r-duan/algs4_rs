@@ -32,7 +32,7 @@
  * Feel free to feed invalid input to test various error scenarios.
  */
 
-use algs4_rs::{FileIn, Graph, error::Algs4Error};
+use algs4_rs::{FileIn, Graph, Algs4Error};
 use std::env;
 
 fn main() -> Result<(), Algs4Error> {

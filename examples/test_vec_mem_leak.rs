@@ -19,7 +19,7 @@ fn main() {
     // Feel free to modify `algs_rs::vec::SVec<T>`'s memory allocation/deallocation related code to
     // test cases of memory leak.
 
-    let mut v: algs4_rs::vec::SVec<String> = algs4_rs::vec::SVec::new();
+    let mut v: algs4_rs::SVec<String> = algs4_rs::SVec::new();
     v.push("hello".to_string());
     v.push("algs4".to_string());
     v.push("rs".to_string());

@@ -1,11 +1,12 @@
 use crate::vec::SVec;
 
-/// The `ResizingBag` struct represents a bag (or multiset) of generic items.  It supports insertion
-/// and iterating over the items in arbitrary order.
+/// A bag (or multiset) of generic items.
 ///
-/// This implementation uses an `crate::vec::SVec`.  Substituting `std::vec::Vec` for
-/// `crate::vec::SVec` also works.  `ResizingBag` is similar to algs4 Java version
-/// `ResizingArrayBag`.  See `LinkedBag` for a version that uses a linked list.
+/// It supports insertion and iterating over the items in arbitrary order.
+///
+/// This implementation uses an [`SVec`].  Substituting [`std::vec::Vec`] for [`SVec`] also works.
+/// `ResizingBag` is similar to algs4 Java version `ResizingArrayBag`.  See [`crate::LinkedBag`] for
+/// a version that uses a linked list.
 ///
 /// The `add`, `is_empty`, and `size` operations take constant time.  Iteration takes time
 /// proportional to the number of items.

@@ -1,10 +1,8 @@
-//! Simple linear regression.
-//!
-//! Compute least squares solution to <em>y</em> = &beta; * <em>x</em> + &alpha;
-
 use crate::error::InvalidArgument;
 use std::fmt;
 
+///  Computes least squares solution to <em>y</em> = &beta; * <em>x</em> + &alpha;.
+///
 ///  The methods of `LinearRegression` struct performs a simple linear regression on an set of
 ///  <em>n</em> data points (<em>y<sub>i</sub></em>, <em>x<sub>i</sub></em>).  That is, it fits a
 ///  straight line <em>y</em> = &alpha; + &beta; <em>x</em>, (where <em>y</em> is the response

@@ -1,5 +1,3 @@
-//! A symbol table implemented with a binary search tree.
-
 use crate::error::InvalidArgument;
 use std::cmp::Ordering;
 use std::collections::VecDeque;
@@ -27,7 +25,7 @@ impl<K, V> Node<K, V> {
     }
 }
 
-/// The `BST` struct represents an ordered symbol table of generic key-value pairs.
+/// An ordered symbol table of generic key-value pairs, implemented with a binary search tree.
 ///
 /// It supports the usual `put`, `get`, `contains`, `delete`, `size`, and `is-empty` methods.  It
 /// also provides ordered methods for finding the `minimum`, `maximum`, `floor`, `select`,

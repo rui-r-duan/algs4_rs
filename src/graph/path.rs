@@ -1,7 +1,19 @@
 use crate::error::InvalidArgument;
 use crate::graph::Graph;
-use crate::stack::LinkedStack as Stack;
+use crate::stack::linkedstack::LinkedStack as Stack;
 
+/// Finds paths from a source vertex `s` to every other vertex in an undirected graph, using
+/// depth-first search.
+///
+/// The constructor takes &Theta;(<em>V</em> + <em>E</em>) time in the worst case, where <em>V</em>
+/// is the number of vertices and <em>E</em> is the number of edges.
+///
+/// Each instance method takes &Theta;(1) time.
+///
+/// It uses &Theta;(<em>V</em>) extra space (not including the graph).
+///
+/// For additional documentation, see <a href="https://algs4.cs.princeton.edu/41graph">Section
+/// 4.1</a> of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
 pub struct DepthFirstPaths {
     marked: Vec<bool>,   // marked[v] = is there an s-v path?
     edge_to: Vec<usize>, // edge_to[v] = last edge on s-v path

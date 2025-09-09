@@ -1,16 +1,15 @@
-//! A graph, implemented using an array of sets.
-//! Parallel edges and self-loops allowed.
-
-use crate::bag::LinkedBag as Bag;
+use crate::bag::linkedbag::LinkedBag as Bag;
 use crate::error::{Algs4Error, InvalidArgument};
 use crate::io::In;
 use std::fmt;
 use std::io::{BufRead, ErrorKind};
 
-pub mod path;
-pub use path::*;
+pub(crate) mod path;
 
+/// An undirected graph.  Parallel edges and self-loops allowed.
+///
 /// The `Graph` struct represents an undirected graph of vertices named `0` through `v - 1`.
+/// It is implemented using an array of sets.
 ///
 /// It supports the following two primary operations: add an edge to the graph, iterate over all of
 /// the vertices adjacent to a vertex.  It also provides methods for returning the degree of a

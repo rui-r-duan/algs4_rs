@@ -1,8 +1,6 @@
-//! Error types of algs4_rs.
-
 use std::{error, fmt, io};
 
-/// Error type used for this algs4 library
+/// Error type used for this library.
 #[derive(Debug)]
 pub enum Algs4Error {
     InvalidArgument(String),
@@ -20,7 +18,7 @@ impl fmt::Display for Algs4Error {
 
 impl error::Error for Algs4Error {}
 
-/// Convert `io::Error` to `Algs4Error`
+/// Convert [`io::Error`] to [`Algs4Error`]
 impl From<io::Error> for Algs4Error {
     fn from(err: io::Error) -> Self {
         Algs4Error::IoError(err)
@@ -39,7 +37,7 @@ impl fmt::Display for InvalidArgument {
 
 impl error::Error for InvalidArgument {}
 
-/// Convert `InvalidArgument` to `Algs4Error`
+/// Convert [`InvalidArgument`] to [`Algs4Error`]
 impl From<InvalidArgument> for Algs4Error {
     fn from(err: InvalidArgument) -> Self {
         Algs4Error::InvalidArgument(err.0)

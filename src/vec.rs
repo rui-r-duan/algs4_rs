@@ -1,9 +1,3 @@
-//! A vector implementation inspired by the Vec implmenetation in [The
-//! Rustonomicon](https://doc.rust-lang.org/nomicon/vec/vec.html).
-//!
-//! The nonicon version does not have the `shrink` allocation, while this implementation does.
-//! **For the nitty-gritty, please read The Rustonomicon.**
-
 use raw_vec::{RawValIter, RawVec};
 use std::fmt;
 use std::marker::PhantomData;
@@ -11,9 +5,13 @@ use std::mem;
 use std::ops::{Deref, DerefMut};
 use std::ptr;
 
-mod raw_vec;
+pub(crate) mod raw_vec;
 
-/// `SVec` stands for Simple Vector.
+/// A Simple Vector.  Inspired by the Vec in [The
+/// Rustonomicon](https://doc.rust-lang.org/nomicon/vec/vec.html), with some differences.
+///
+/// The nonicon version does not have the `shrink` allocation, while this implementation does.
+/// **For the nitty-gritty, please read The Rustonomicon.**
 pub struct SVec<T> {
     buf: RawVec<T>,
     len: usize,
@@ -188,23 +186,23 @@ impl<T> DerefMut for SVec<T> {
     }
 }
 
-pub struct IntoIter<T> {
+pub struct SVecIntoIter<T> {
     _buf: RawVec<T>, // we don't actually care about this, just need it to live
     iter: RawValIter<T>,
 }
 
 impl<T> IntoIterator for SVec<T> {
     type Item = T;
-    type IntoIter = IntoIter<T>;
-    fn into_iter(self) -> IntoIter<T> {
+    type IntoIter = SVecIntoIter<T>;
+    fn into_iter(self) -> SVecIntoIter<T> {
         let (iter, buf) = unsafe { (RawValIter::new(&self), ptr::read(&self.buf)) };
         mem::forget(self);
 
-        IntoIter { iter, _buf: buf }
+        SVecIntoIter { iter, _buf: buf }
     }
 }
 
-impl<T> Iterator for IntoIter<T> {
+impl<T> Iterator for SVecIntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
         self.iter.next()
@@ -215,13 +213,13 @@ impl<T> Iterator for IntoIter<T> {
     }
 }
 
-impl<T> DoubleEndedIterator for IntoIter<T> {
+impl<T> DoubleEndedIterator for SVecIntoIter<T> {
     fn next_back(&mut self) -> Option<T> {
         self.iter.next_back()
     }
 }
 
-impl<T> Drop for IntoIter<T> {
+impl<T> Drop for SVecIntoIter<T> {
     fn drop(&mut self) {
         // only need to ensure all our elements are read, and thus their destructors are called;
         // buffer will clean itself up afterwards.
@@ -229,6 +227,7 @@ impl<T> Drop for IntoIter<T> {
     }
 }
 
+/// A draining iterator for [`SVec`].
 pub struct Drain<'a, T: 'a> {
     vec: PhantomData<&'a mut SVec<T>>,
     iter: RawValIter<T>,
@@ -299,7 +298,7 @@ impl<T> Default for SVec<T> {
     }
 }
 
-/// Similar to macro `std::vec`.  See the documentation of macro `std::vec`.
+/// Similar to macro [`std::vec!`].
 ///
 /// Unlike array expressions, form `svec![T; N]` requires that `T` implements `Clone` trait instead
 /// of `Copy` which is required by an array, and `N` does not have to be a constant.

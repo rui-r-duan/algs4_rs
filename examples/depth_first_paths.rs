@@ -24,7 +24,7 @@
  *  0 to 5:  0-2-3-5
  */
 
-use algs4_rs::error::Algs4Error;
+use algs4_rs::Algs4Error;
 use algs4_rs::{DepthFirstPaths, FileIn, Graph};
 use std::env;
 

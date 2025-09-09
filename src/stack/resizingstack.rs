@@ -1,13 +1,14 @@
 use crate::vec::SVec;
 use std::fmt;
 
-/// The `ResizingStack` struct represents a last-in-first-out (LIFO) stack of generic items.  It supports
-/// the usual `push` and `pop` operations, along with methods for peeking at the top item, testing
-/// if the stack is empty, and iterating through the items in LIFO order.
+/// A last-in-first-out (LIFO) stack of generic items.
 ///
-/// This implementation uses an `crate::vec::SVec`.  Substituting `std::vec::Vec` for
-/// `crate::vec::SVec` also works.  `ResizingStack` is similar to algs4 Java version
-/// `ResizingArrayStack`.  See `LinkedStack` for a version that uses a linked list.
+/// It supports the usual `push` and `pop` operations, along with methods for peeking at the top
+/// item, testing if the stack is empty, and iterating through the items in LIFO order.
+///
+/// This implementation uses an [`SVec`].  Substituting [`std::vec::Vec`] for [`SVec`] also works.
+/// `ResizingStack` is similar to algs4 Java version `ResizingArrayStack`.  See
+/// [`crate::LinkedStack`] for a version that uses a linked list.
 ///
 /// The `push` and `pop` operations take constant amortized time.  The `len`, `peek`, and `is_empty`
 /// operations take constant time in the worst case.

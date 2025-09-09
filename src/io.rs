@@ -1,5 +1,3 @@
-//! I/O of algs4_rs.
-
 use crate::primitive::{PrimFloat, PrimInt};
 use crate::scanner::Scanner;
 use std::fs::File;
@@ -9,6 +7,7 @@ use std::io::{self, BufRead};
 use std::ops::{Deref, DerefMut};
 use std::str::FromStr;
 
+/// General Input (stdin, file, socket, etc.).
 pub struct In<B: BufRead> {
     scanner: Scanner<B>,
 }
@@ -91,7 +90,7 @@ impl<B: BufRead> In<B> {
     }
 }
 
-/// algs4_rs's standard input
+/// Standard input of this library.
 pub struct StdIn(In<StdinLock<'static>>);
 
 impl Deref for StdIn {
@@ -113,7 +112,7 @@ impl StdIn {
     }
 }
 
-/// algs4_rs's file input
+/// File input.
 pub struct FileIn(In<BufReader<File>>);
 
 impl Deref for FileIn {

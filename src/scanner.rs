@@ -1,29 +1,28 @@
-//! `Scanner` takes a `BufRead` for a *text input*, and yields the next entity until EOF is reached.
-//!
-//! A valid text input consists of delimiters and tokens.  The delimiters are ASCII whitespaces
-//! (U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE).  The tokens consist of the other
-//! UTF-8 characters.
-//!
-//! It operates in two modes, and the two modes' methods can be used together in any order.
-//!
-//! # Mode 1: token-by-token (delimiter: ASCII whitespaces)
-//! methods:
-//! - `has_next`
-//! - `next_token`
-//! - `next_int`
-//! - `next_float`
-//! - `next_bool`
-//!
-//! # Mode 2: line-by-line (delimiter: U+000A LF)
-//! methods:
-//! - `has_next_line`
-//! - `next_line`
-
 use crate::primitive::{PrimFloat, PrimInt};
 use std::io;
 use std::io::BufRead;
 use std::str::FromStr;
 
+/// Takes a [`BufRead`] for a *text input*, and yields the next entity until EOF is reached.
+///
+/// A valid text input consists of delimiters and tokens.  The delimiters are ASCII whitespaces
+/// (U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE).  The tokens consist of the other
+/// UTF-8 characters.
+///
+/// It operates in two modes, and the two modes' methods can be used together in any order.
+///
+/// # Mode 1: token-by-token (delimiter: ASCII whitespaces)
+/// methods:
+/// - `has_next`
+/// - `next_token`
+/// - `next_int`
+/// - `next_float`
+/// - `next_bool`
+///
+/// # Mode 2: line-by-line (delimiter: U+000A LF)
+/// methods:
+/// - `has_next_line`
+/// - `next_line`
 pub struct Scanner<B: BufRead> {
     bufread: B,
     buf: Vec<u8>,       // buffer for bytes read from BufRead
