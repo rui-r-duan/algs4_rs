@@ -1,3 +1,5 @@
+//! I/O of algs4_rs.
+
 use crate::primitive::{PrimFloat, PrimInt};
 use crate::scanner::Scanner;
 use std::fs::File;
@@ -31,6 +33,10 @@ impl<B: BufRead> In<B> {
     ///
     /// The integer type is one of `i8`, `i16`, `i32`, `i64`, `i128`, `isize`, `u8`, `u16`, `u32`,
     /// `u64`, `u128`, or `usize`.
+    ///
+    /// # Errors
+    ///
+    /// Same as `Scanner::next_int`.
     pub fn read_int<T>(&mut self) -> io::Result<T>
     where
         T: PrimInt + FromStr,
@@ -41,6 +47,10 @@ impl<B: BufRead> In<B> {
     /// Reads a floating point number from the input stream.
     ///
     /// The integer type is one of `f32` or `f64`.
+    ///
+    /// # Errors
+    ///
+    /// Same as `Scanner::next_float`.
     pub fn read_float<T>(&mut self) -> io::Result<T>
     where
         T: PrimFloat + FromStr,
@@ -50,6 +60,10 @@ impl<B: BufRead> In<B> {
 
     /// Reads all integers from the input stream using the internal scanner, consuming all the
     /// content in the input stream, reading the content in a token-by-token streaming mode.
+    ///
+    /// # Errors
+    ///
+    /// Same as `Scanner::next_int`.
     pub fn read_all_ints<T>(&mut self) -> io::Result<Vec<T>>
     where
         T: PrimInt + FromStr,
@@ -68,6 +82,10 @@ impl<B: BufRead> In<B> {
     }
 
     /// Read a string token from the input stream.
+    ///
+    /// # Errors
+    ///
+    /// Same as `Scanner::next_token`.
     pub fn read_string(&mut self) -> io::Result<String> {
         self.scanner.next_token()
     }

@@ -28,7 +28,7 @@ The current versions are good for learning, though.
 - Complete documentation.
 - Unit tests in the `tests` modules.
 - Clients in `examples` directory.
-- Big-O analysis tools: `DoublingTest`, `DoublingRatio`, Stop Watch (using Rust
+- Big-O analysis tools: Doubling Test, Doubling Ratio, Stop Watch (using Rust
   std), in `examples` directory, and `LinearRegression` in a library module.
 - Standard Input `StdIn`, file input `FileIn`, and abstract versatile input
   `In`, backed by the Java-util-like `Scanner`.  They are all implemented

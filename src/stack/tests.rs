@@ -21,6 +21,10 @@ fn linked_stack_of_str() {
     let output = format!("{} {}", popped_str, stack_len);
     assert_eq!(output, "to be not that or be (2 left on stack)");
     assert_eq!(st.to_string(), "is to ");
+
+    // test clone
+    let st2 = st.clone();
+    assert_eq!(st2.to_string(), "is to ");
 }
 
 #[test]
@@ -43,4 +47,8 @@ fn resizing_stack_of_str() {
     let output = format!("{} {}", popped_str, stack_len);
     assert_eq!(output, "to be not that or be (2 left on stack)");
     assert_eq!(st.to_string(), "is to ");
+
+    // test clone
+    let st2 = st.clone();
+    assert_eq!(st2.to_string(), "is to ");
 }

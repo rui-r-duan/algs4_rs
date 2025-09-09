@@ -11,11 +11,13 @@ use std::fmt;
 ///
 /// For additional documentation, see <a href="https://algs4.cs.princeton.edu/13stacks">Section
 /// 1.3</a> of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+#[derive(Clone)]
 pub struct LinkedStack<T> {
     first: Option<Box<Node<T>>>, // top of stack
     n: usize,                    // size of the stack
 }
 
+#[derive(Clone)]
 struct Node<T> {
     item: T,
     next: Option<Box<Node<T>>>,

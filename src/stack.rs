@@ -1,3 +1,5 @@
+//! Last-in-first-out (LIFO) stack of generic items.
+
 pub mod linkedstack;
 pub mod resizingstack;
 

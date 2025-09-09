@@ -1,3 +1,5 @@
+//! Traits for primitive integers and floating point types.
+
 /// A trait that represents all the Rust primivive integers.
 ///
 /// A good alternative is `PrimInt` trait in crate `num_traits`.

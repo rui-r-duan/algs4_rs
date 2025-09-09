@@ -17,6 +17,14 @@ fn linked_bag_of_str() {
         bag.iter().map(|s| *s).collect::<HashSet<&str>>(),
         HashSet::from(list)
     );
+
+    // test clone
+    let bag2 = bag.clone();
+    assert_eq!(bag2.len(), bag.len());
+    assert_eq!(
+        bag2.iter().map(|s| *s).collect::<HashSet<&str>>(),
+        HashSet::from(list)
+    );
 }
 
 #[test]
@@ -32,6 +40,14 @@ fn resizing_bag_of_str() {
     assert_eq!(bag.len(), 14);
     assert_eq!(
         bag.iter().map(|s| *s).collect::<HashSet<&str>>(),
+        HashSet::from(list)
+    );
+
+    // test clone
+    let bag2 = bag.clone();
+    assert_eq!(bag2.len(), bag.len());
+    assert_eq!(
+        bag2.iter().map(|s| *s).collect::<HashSet<&str>>(),
         HashSet::from(list)
     );
 }

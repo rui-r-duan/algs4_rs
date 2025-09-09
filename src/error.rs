@@ -1,3 +1,5 @@
+//! Error types of algs4_rs.
+
 use std::{error, fmt, io};
 
 /// Error type used for this algs4 library
