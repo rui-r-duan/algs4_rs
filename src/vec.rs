@@ -10,7 +10,7 @@ pub(crate) mod raw_vec;
 /// A Simple Vector.  Inspired by the Vec in [The
 /// Rustonomicon](https://doc.rust-lang.org/nomicon/vec/vec.html), with some differences.
 ///
-/// The nonicon version does not have the `shrink` allocation, while this implementation does.
+/// The nomicon version does not have the `shrink` allocation, while this implementation does.
 /// **For the nitty-gritty, please read The Rustonomicon.**
 pub struct SVec<T> {
     buf: RawVec<T>,

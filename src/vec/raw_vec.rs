@@ -25,6 +25,7 @@ impl<T> RawVec<T> {
         }
     }
 
+    /// Double the size.
     pub(crate) fn grow(&mut self) {
         // Since we set the capacity to usize::MAX when T has size 0,
         // getting to here necessarily means the Vec is overfull.
@@ -60,6 +61,7 @@ impl<T> RawVec<T> {
         self.cap = new_cap;
     }
 
+    /// Half the size.
     pub(crate) fn shrink(&mut self) {
         if mem::size_of::<T>() == 0 {
             return;

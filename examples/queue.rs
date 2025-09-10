@@ -2,42 +2,27 @@
  * $ more tobe.txt
  * to be or not to - be - - that - - - is
  *
- * $ cargo run --example bag -- < tobe.txt
- * size of bag = 14
- * is
- * -
- * -
- * -
- * that
- * -
- * -
- * be
- * -
- * to
- * not
- * or
- * be
- * to
+ * $ cargo run --example queue < tobe.txt
+ * to be or not to be (2 left on queue)
  */
 
-use algs4_rs::ResizingBag as Bag;
+use algs4_rs::LinkedQueue as Queue;
 use algs4_rs::StdIn;
 use std::time::Instant;
 
 fn main() -> std::io::Result<()> {
-    let mut bag = Bag::new();
+    let mut qu = Queue::new();
     let mut stdin = StdIn::new();
     let now = Instant::now();
     while !stdin.is_empty() {
         let item = stdin.read_string()?;
-        bag.add(item);
+        if item != "-" {
+            qu.enqueue(item);
+        } else if !qu.is_empty() {
+            print!("{} ", qu.dequeue().unwrap());
+        }
     }
-
-    println!("size of bag = {}", bag.len());
-    for s in bag.iter() {
-        println!("{s}");
-    }
+    println!("({} left on queue)", qu.len());
     println!("elapsed time = {:.3}s", now.elapsed().as_secs_f64());
-
     Ok(())
 }

@@ -51,3 +51,19 @@ fn main() {
     // - Memory containment (related to memory leaking)
     println!("{}", v[0]); // panic: index out of bounds: the len is 0 but the index is 0
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// NOTE
+//
+// If `std::io::stdin` or our `Scanner` with `std::io::stdin` is used, then Valgrind will report
+// some "still reachable" memory.  This is not a concern.
+//
+// See this GitHub issue: https://github.com/rust-lang/rust/issues/80406
+//
+// The GitHub issue mentions the Git commit which caused this behaviour:
+//   https://github.com/rust-lang/rust/issues/80406
+//
+// This Git commit intentionally caused `stdin` to stay in the program till the OS collects the
+// memory.  Thus, the memory is reported by Valgrind as "still reachable".
+//
+////////////////////////////////////////////////////////////////////////////////
