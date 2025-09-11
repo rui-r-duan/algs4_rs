@@ -20,7 +20,7 @@ use std::fmt;
 /// circular buffer (also called ring buffer) to implement a double-ended queue, whereas our queue
 /// is single-ended.
 ///
-/// [`crate::SVecQueue`] is simpler than [`std::collections::VecDeque`], and is closer to algs4 Java
+/// [`crate::SVecQue`] is simpler than [`std::collections::VecDeque`], and is closer to algs4 Java
 /// version `ResizingArrayQueue`.  It uses memory move to fill the "holes" that are left in the
 /// front of the queue because of the `dequeue` operations.
 ///

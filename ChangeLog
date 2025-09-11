@@ -1,4 +1,10 @@
-2025-09-08  Rui Duan  <ruiduan@member.fsf.org>
+2025-09-10  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.5.1
+
+	* src/queue/resizingqueue.rs: Fix a link in doc.
+
+2025-09-10  Rui Duan  <ruiduan@member.fsf.org>
 
 	v0.5.0
 
