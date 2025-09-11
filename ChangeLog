@@ -1,10 +1,51 @@
 2025-09-08  Rui Duan  <ruiduan@member.fsf.org>
 
+	v0.5.0
+
+	Add links in documentation.  Move mod doc to struct doc.
+	Standardize the style of doc.
+
+	* src/lib.rs: Re-export the data types to the first level, hiding
+	internal mods.
+
+	* src/graph.rs:
+	* src/path.rs:
+	* examples/depth_first_paths.rs:
+	* examples/breadth_first_paths.rs:
+	* examples/graph.rs:
+	Add undirected Graph, DepthFirstPaths, BreadthFirstPaths.
+
+	* src/queue.rs, src/queue/linkedqueue.rs:
+	* src/queue/resizingqueue.rs, src/queue/svecque.rs:
+	* examples/queue.rs:
+	Add three implementations of Queue.  In the documentation, discuss
+	the implementation considerations, regarding linked list and
+	vector.
+
+	* src/bag/linkedbag.rs,
+	* src/stack/linkedstack.rs:
+	* src/stack/resizingstack.rs:
+	Implement Clone for LinkedBag, LinkedStack, ResizingStack.
+
+	* src/io.rs: Document errors of the APIs.
+
+	* examples/linkedqueue_mut_pointer.rs: Add non-covariant
+	implementation of LinkedQueue using mutable pointers.
+
+	* examples/subtyping_variance.rs: Add template for testing
+	subtyping and covariance.
+
+	* examples/test_vec_mem_leak.rs: Add comment for non-released
+	memory in `std::io::stdin`.
+
+2025-09-08  Rui Duan  <ruiduan@member.fsf.org>
+
 	v0.4.0
 
-	* src/vec.rs: Rename `Vec` to `SVec`.  Add ergonomic features:
-	Clone, Debug, FromIterator (used by `iterator::collect()),
-	Default, and macro `svec`.
+	* src/vec.rs:
+	- Rename `Vec` to `SVec`.  (BREAKING CHANGE)
+	- Add ergonomic features: Clone, Debug, FromIterator (used by
+	`iterator::collect()), Default, and macro `svec`.
 
 	* src/scanner.rs: BREAKING CHANGES.
 	- Delete old methods `next_i32`, `next_i64`, next_f64`.

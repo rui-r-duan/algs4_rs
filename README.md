@@ -27,7 +27,7 @@ The current versions are good for learning, though.
   used.
 - Complete documentation.
 - Unit tests in the `tests` modules.
-- Clients in `examples` directory.
+- Clients and utilities in `examples` directory.
 - Big-O analysis tools: Doubling Test, Doubling Ratio, Stop Watch (using Rust
   std), in `examples` directory, and `LinearRegression` in a library module.
 - Standard Input `StdIn`, file input `FileIn`, and abstract versatile input
@@ -36,6 +36,8 @@ The current versions are good for learning, though.
 - Simplified but professional implementation of vector `SVec` to demonstrate
   Rust's equivalences of `ResizingArrayStack`, `ResizingArrayQueue`, etc.
   Advanced Rust is demonstrated in `SVec`.
+- Three implementations of Queue, with discussions, regarding linked list and
+  vector.
 
 ## How to
 
