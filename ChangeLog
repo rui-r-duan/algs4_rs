@@ -1,3 +1,16 @@
+2025-09-11  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.5.2
+
+	* src/bst.rs, src/graph/path.rs, src/io.rs:
+	* src/queue/linkedqueue.rs, src/queue/svecque.rs, src/vec.rs:
+	* src/vec/raw_vec.rs:
+	Apply Clippy suggestions.
+
+	* src/bst.rs: Allow clippy::borrowed_box.
+
+	* src/graph/path.rs: Add doc for BreadthFirstPaths.
+
 2025-09-10  Rui Duan  <ruiduan@member.fsf.org>
 
 	v0.5.1

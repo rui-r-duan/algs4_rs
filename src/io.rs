@@ -112,6 +112,12 @@ impl StdIn {
     }
 }
 
+impl Default for StdIn {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// File input.
 pub struct FileIn(In<BufReader<File>>);
 

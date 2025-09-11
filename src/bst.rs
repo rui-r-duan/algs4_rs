@@ -1,3 +1,5 @@
+#![allow(clippy::borrowed_box)]
+
 use crate::error::InvalidArgument;
 use std::cmp::Ordering;
 use std::collections::VecDeque;
@@ -506,7 +508,7 @@ impl<'a, K: Ord> KeysRange<'a, K> {
         let mut iter = KeysRange {
             queue: VecDeque::new(),
         };
-        keys(&root, &mut iter.queue, lo, hi);
+        keys(root, &mut iter.queue, lo, hi);
         iter
     }
 }
@@ -527,9 +529,7 @@ impl<'a, K: Ord> DoubleEndedIterator for KeysRange<'a, K> {
 
 fn keys<'a, 'b, K: Ord, V>(x: &'a Link<K, V>, queue: &mut VecDeque<&'a K>, lo: &'b K, hi: &'b K) {
     match x {
-        None => {
-            return;
-        }
+        None => {}
         Some(y) => {
             let cmplo = lo.cmp(&y.key);
             let cmphi = hi.cmp(&y.key);
@@ -569,7 +569,7 @@ impl<'a, K: Ord> KeysLevelOrder<'a, K> {
             queue: VecDeque::new(),
         };
         let mut node_queue: VecDeque<&'a Link<K, V>> = VecDeque::new();
-        node_queue.push_back(&root);
+        node_queue.push_back(root);
         while !node_queue.is_empty() {
             let x = node_queue.pop_front().unwrap();
             if x.is_none() {

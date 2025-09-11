@@ -74,7 +74,7 @@ impl<T> SVecQue<T> {
     }
 
     pub fn dequeue(&mut self) -> Option<T> {
-        if self.len() == 0 {
+        if self.is_empty() {
             None
         } else {
             let elem = unsafe { Some(ptr::read(self.ptr().add(self.front))) };
@@ -153,5 +153,11 @@ impl<T: Clone> Clone for SVecQue<T> {
             q.enqueue(elem.clone());
         }
         q
+    }
+}
+
+impl<T> Default for SVecQue<T> {
+    fn default() -> Self {
+        Self::new()
     }
 }

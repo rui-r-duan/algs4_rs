@@ -148,7 +148,7 @@ impl<T> SVec<T> {
     /// example), the vector may have lost and leaked elements arbitrarily, including elements
     /// outside the range.
     pub fn drain(&mut self) -> Drain<'_, T> {
-        let iter = unsafe { RawValIter::new(&self) };
+        let iter = unsafe { RawValIter::new(self) };
 
         // This is mem::forget safety thing.  If Drain is forgotton, we just
         // leak the whole SVec's contents.  Also we need to do this *eventualy*
@@ -164,7 +164,7 @@ impl<T> SVec<T> {
 
 impl<T> Drop for SVec<T> {
     fn drop(&mut self) {
-        while let Some(_) = self.pop() {}
+        while self.pop().is_some() {}
         // deallocation is handled by RawVec
     }
 }

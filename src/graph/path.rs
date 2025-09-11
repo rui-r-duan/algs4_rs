@@ -83,7 +83,7 @@ fn validate_vertex(s: usize, count_vertices: usize) -> Result<(), InvalidArgumen
 }
 
 fn validate_vertices(sources: &[usize], count_vertices: usize) -> Result<(), InvalidArgument> {
-    if sources.len() == 0 {
+    if sources.is_empty() {
         return Err(InvalidArgument("zero vertices".to_string()));
     }
     for &v in sources {
@@ -92,6 +92,18 @@ fn validate_vertices(sources: &[usize], count_vertices: usize) -> Result<(), Inv
     Ok(())
 }
 
+/// Finds shortest paths (number of edges) from a source vertex `s` (or a set of source vertices) to
+/// every other vertex in an undirected graph, using breadth-first search.
+///
+/// The constructor takes &Theta;(<em>V</em> + <em>E</em>) time in the worst case, where <em>V</em>
+/// is the number of vertices and <em>E</em> is the number of edges.
+///
+/// Each instance method takes &Theta;(1) time.
+///
+/// It uses &Theta;(<em>V</em>) extra space (not including the graph).
+///
+/// For additional documentation, see <a href="https://algs4.cs.princeton.edu/41graph">Section
+/// 4.1</a> of <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
 pub struct BreadthFirstPaths {
     marked: Vec<bool>,   // marked[v] = is there an s-v path?
     edge_to: Vec<usize>, // edge_to[v] = previous edge on shortest s-v path

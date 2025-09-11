@@ -25,9 +25,9 @@ use std::ptr::NonNull;
 ///   See `examples/subtyping_variance.rs` and `examples/linkedqueue_mut_pointer.rs`.
 ///
 /// - `Option<Rc<RefCell<Node<T>>>`: very hard (almost impossible) to implement
-///    `Iterator` for `LinkedQueueIter<'a, T>`, `peek()`'s return type cannot be `Option<&T>`,
-///    it has to be changed to `Option<Ref<T>>`.
-///    See <https://rust-unofficial.github.io/too-many-lists/fourth-iteration.html>.
+///   `Iterator` for `LinkedQueueIter<'a, T>`, `peek()`'s return type cannot be `Option<&T>`,
+///   it has to be changed to `Option<Ref<T>>`.
+///   See <https://rust-unofficial.github.io/too-many-lists/fourth-iteration.html>.
 ///
 /// - `Option<Box<Node<T>>>`: cannot use two `Box`s to point to the same `Node`, which is needed
 ///   in a linked queue.
@@ -46,7 +46,6 @@ use std::ptr::NonNull;
 ///
 /// For more discussions about implementing linked lists, see
 /// <https://rust-unofficial.github.io/too-many-lists/index.html>.
-
 pub struct LinkedQueue<T> {
     front: Option<NonNull<Node<T>>>, // beginning of queue
     back: Option<NonNull<Node<T>>>,  // end of queue
@@ -100,7 +99,7 @@ impl<T> LinkedQueue<T> {
             self.front = new_back;
         } else {
             unsafe {
-                (*self.back.unwrap().as_mut()).next = new_back;
+                self.back.unwrap().as_mut().next = new_back;
             }
         }
         self.back = new_back;
@@ -112,9 +111,7 @@ impl<T> LinkedQueue<T> {
     /// queue is empty.
     pub fn dequeue(&mut self) -> Option<T> {
         // Remove from the front.
-        if self.front.is_none() {
-            return None;
-        }
+        self.front?; // if it is_none(), return None
         let front = unsafe { Box::from_raw(self.front.unwrap().as_ptr()) };
         self.front = front.next;
         if self.front.is_none() {
