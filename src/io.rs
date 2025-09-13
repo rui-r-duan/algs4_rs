@@ -69,13 +69,10 @@ impl<B: BufRead> In<B> {
     {
         let mut list = Vec::new();
         loop {
-            let hasnext = self.scanner.has_next()?;
-            if !hasnext {
+            if !self.scanner.has_next()? {
                 break;
             }
-
-            let t = self.scanner.next_int::<T>()?;
-            list.push(t);
+            list.push(self.scanner.next_int::<T>()?);
         }
         Ok(list)
     }
@@ -87,6 +84,23 @@ impl<B: BufRead> In<B> {
     /// Same as `Scanner::next_token`.
     pub fn read_string(&mut self) -> io::Result<String> {
         self.scanner.next_token()
+    }
+
+    /// Reads all string tokens from the input stream using the internal scanner, consuming all the
+    /// content in the input stream, reading the content in a token-by-token streaming mode.
+    ///
+    /// # Errors
+    ///
+    /// Same as `Scanner::next_token`.
+    pub fn read_all_strings(&mut self) -> io::Result<Vec<String>> {
+        let mut list = Vec::new();
+        loop {
+            if !self.scanner.has_next()? {
+                break;
+            }
+            list.push(self.scanner.next_token()?);
+        }
+        Ok(list)
     }
 }
 
