@@ -25,6 +25,27 @@ impl<T> RawVec<T> {
         }
     }
 
+    /// # Panics
+    ///
+    /// Panics if the new capacity exceeds `isize::MAX` *bytes*.
+    pub(crate) fn with_capacity(capacity: usize) -> Self {
+        let cap = if mem::size_of::<T>() == 0 {
+            usize::MAX
+        } else {
+            capacity
+        };
+        let layout = Layout::array::<T>(cap).unwrap();
+        let ptr = unsafe { alloc::alloc(layout) };
+        let non_null = match NonNull::new(ptr as *mut T) {
+            Some(p) => p,
+            None => alloc::handle_alloc_error(layout),
+        };
+        RawVec {
+            ptr: non_null,
+            cap,
+        }
+    }
+
     /// Double the size.
     pub(crate) fn grow(&mut self) {
         // Since we set the capacity to usize::MAX when T has size 0,

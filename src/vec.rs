@@ -26,6 +26,23 @@ impl<T> SVec<T> {
         }
     }
 
+    /// Create an empty `SVec` with at least the specified capacity.
+    ///
+    /// If the capacity is zero, the vector will not allocate.
+    ///
+    /// For `SVec<T>` where T is a zero-sized type, there will be no allocation and the capacity
+    /// will always be `usize::MAX`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the new capacity exceeds `isize::MAX` *bytes*.
+    pub fn with_capacity(capacity: usize) -> Self {
+        SVec {
+            buf: RawVec::with_capacity(capacity),
+            len: 0,
+        }
+    }
+
     fn ptr(&self) -> *mut T {
         self.buf.ptr.as_ptr()
     }
@@ -474,5 +491,29 @@ mod tests {
 
         let y: Vec<&str> = v.iter().cloned().collect();
         assert_eq!(y, ["aaa", "bbb"],); // Vec<&str> == [&str; 2]
+    }
+
+    #[test]
+    fn test_vec_with_capacity() {
+        let mut v: SVec<&str> = SVec::with_capacity(10);
+        assert_eq!(v.cap(), 10);
+        v.push("1");
+        v.push("2");
+        assert_eq!(v.len(), 2);
+        assert_eq!(v.cap(), 10);
+        v.pop();
+        assert_eq!(v.len(), 1);
+        assert_eq!(v.cap(), 10);
+        v.push("2");
+        v.push("3");
+        v.push("4");
+        assert_eq!(v.len(), 4);
+        assert_eq!(v.cap(), 10);
+        v.pop();
+        assert_eq!(v.len(), 3);
+        assert_eq!(v.cap(), 10);
+        v.pop();
+        assert_eq!(v.len(), 2); // len (2) == cap (10) / 4, shrink buffer to half
+        assert_eq!(v.cap(), 5);
     }
 }
