@@ -26,6 +26,7 @@ pub use error::*;
 pub use graph::Graph;
 pub use graph::path::*;
 pub use heap::sort::*;
+pub use heap::maxpq::*;
 pub use io::*;
 pub use linear_regression::*;
 pub use primitive::*;

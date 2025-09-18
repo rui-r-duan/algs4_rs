@@ -2,7 +2,7 @@
  * $ more tobe.txt
  * to be or not to - be - - that - - - is
  *
- * $ cargo run --example queue < tobe.txt
+ * $ cargo run --example queue -- < tobe.txt
  * to be or not to be (2 left on queue)
  */
 
