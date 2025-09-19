@@ -119,6 +119,7 @@ where
         self.pq.swap(i, j)
     }
 
+    // is pq[1..=n] a max heap?
     fn is_max_heap(&self) -> bool {
         self.is_max_heap_ordered(1)
     }

@@ -1,3 +1,20 @@
+2025-09-18  Rui Duan  <ruiduan@member.fsf.org>
+
+	v0.6.0
+
+	* src/heap.rs, src/heap/sort.rs, examples/heap_sort.rs:
+	Add Heap Sort and a client of it.
+
+	* src/heap/maxpq.rs, examples/maxpq.rs:
+	Add MaxPQ and a client of it.
+
+	* src/heap/minpq.rs, examples/minpq.rs:
+	Add MinPQ and a client of it.
+
+	* src/io.rs: Add method read_all_strings.
+
+	* src/vec.rs, src/vec/raw_vec.rs: Add methods with_capacity.
+
 2025-09-11  Rui Duan  <ruiduan@member.fsf.org>
 
 	v0.5.2
